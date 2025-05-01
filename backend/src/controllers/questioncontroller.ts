@@ -1,6 +1,9 @@
 import { prisma as client, prisma } from "../utils/primaclient"
 import { timer } from "../utils/timer"
 import { Request, Response } from "express"
+import { valkey } from "../utils/rislint"
+
+
 
 export const getquestion = async (req: Request, res: Response) => {
     const { keywords, time, testid } = req.body
@@ -21,7 +24,7 @@ export const getquestion = async (req: Request, res: Response) => {
       let values: any[] = [];
       
       
-      queries.forEach((q, idx) => {
+      queries.forEach((q :any, idx :any) => {
         const placeholder = `$${idx + 1}`; 
         if (q.type === 'equals') {
           conditions.push(`"identifier_id" = ${placeholder}`);  
@@ -60,7 +63,7 @@ export const getquestion = async (req: Request, res: Response) => {
         {} 
       );
       //saving th answr with tst id
-      
+      valkey.set(testid, answers);
 
     return res.status(200).json(withoutanswer)
 
@@ -68,8 +71,10 @@ export const getquestion = async (req: Request, res: Response) => {
 
 export const verifyquestion = async(req:Request,res:Response)=>{
     const {answer,testid} = req.body
-    const verifiedAnswersString = ""
-    const verifiedAnswers = JSON.parse(verifiedAnswersString); 
+    const verifiedAnswersString = valkey.get(testid)
+
+      const verifiedAnswers = JSON.parse(verifiedAnswersString); 
+
 
 
 if(!verifiedAnswers){
