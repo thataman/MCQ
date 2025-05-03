@@ -5,11 +5,12 @@ import { valkey } from "../utils/rislint"
 
 
 
-export const getquestion = async (req: Request, res: Response) => {
+export const getquestion = async (req: Request, res: Response):Promise<void> => {
     const { keywords, time, testid } = req.body
     const allotedtime = timer(time)
     if (allotedtime === 0) {
-        return res.json({ error: "Wrong time allotted" });
+       res.json({ error: "Wrong time allotted" });
+       return
     }
 
     const queries = keywords.map((key: string) => {
@@ -55,38 +56,50 @@ export const getquestion = async (req: Request, res: Response) => {
         "question": e.question,
         "options": e.options
     }))
-    const answers = questions.reduce(
-        (acc: { [key: number]: string }, { quesid, ans }: { quesid: number; ans: string }) => {
-          acc[quesid] = ans;  
+    // const answers = questions.reduce(
+    //     (acc: { [key: number]: string }, { id, correct_option }: { id: number; correct_option: string }) => {
+    //       acc[id] = correct_option;  
+    //       return acc; 
+    //     },
+    //     {} 
+    //   );
+      const answersexplanation = questions.reduce(
+        (acc: { [key: number]: {correct_option:string,explanation:string} }, question: { id: number ,correct_option :string,explanation: string }) => {
+          const { id, correct_option, explanation } = question;
+          acc[id] = {correct_option , explanation
+            
+          };  
           return acc; 
         },
         {} 
       );
-      //saving th answr with tst id
-      valkey.set(testid, answers);
-
-    return res.status(200).json(withoutanswer)
-
+      
+      valkey.set(testid, answersexplanation);
+   res.status(200).json(withoutanswer)
+return
 }
 
-export const verifyquestion = async(req:Request,res:Response)=>{
+export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
     const {answer,testid} = req.body
-    const verifiedAnswersString = valkey.get(testid)
-
-      const verifiedAnswers = JSON.parse(verifiedAnswersString); 
+    const verifiedAnswersString = await valkey.get(testid)
+    let verifiedAnswers 
+     if (verifiedAnswersString) {
+        verifiedAnswers = JSON.parse(verifiedAnswersString); 
+     }
 
 
 
 if(!verifiedAnswers){
-return res.json("ansers not found")
+ res.json("ansers not found")
+ return
 }
 let count = 0;
-    //const verified answers=  redis.get(testid)
 for(const answerval in answer){
-    if(answerval.correct_option === verifiedAnswers[answerval.id]){
+    if(answer[answerval] === verifiedAnswers[answerval].correct_option){
         count++
     }
 }
 
-    return res.status(200).json({count})
+     res.status(200).json({count})
+     return
 }

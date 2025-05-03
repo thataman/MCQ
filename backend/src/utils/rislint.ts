@@ -3,5 +3,6 @@ import Valkey from "ioredis"
 Dotenv.config()
 
 const serviceUrl = process.env.serviceUri
-export const valkey = new Valkey(serviceUrl) ?? "";
+
+export const valkey = new Valkey(serviceUrl ?? "");
 
