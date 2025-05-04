@@ -17,7 +17,7 @@ export const getquestion = async (req: Request, res: Response):Promise<void> => 
         if (key.length === 1) {
           return { type: 'startsWith', value: key }; 
         } else {
-          return { type: 'equals' value: key };  
+          return { type: 'equals', value: key };  
         }
       });
       
