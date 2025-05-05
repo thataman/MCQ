@@ -5,6 +5,7 @@ import QuestionDisplay from './QuestionDisplay';
 import TestControls from './TestControls';
 import Timer from './Timer';
 import ProgressSummary from './ProgressSummary';
+import TestResults from './TestResults';
 import { Test, UserProgress, QuestionStatus } from '../../types';
 
 interface TestPlatformProps {
@@ -24,6 +25,7 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
     timeRemaining: test.timeLimit * 60,
   });
 
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
@@ -47,6 +49,10 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
       }));
     }
   }, [test, progress.statusMap]);
+
+  if (isSubmitted) {
+    return <TestResults test={test} statusMap={progress.statusMap} />;
+  }
 
   const currentCategory = test.categories.find(cat => cat.id === progress.currentCategoryId);
   const currentQuestion = currentCategory?.questions.find(q => q.id === progress.currentQuestionId);
@@ -145,14 +151,12 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
       if (!confirmSubmit) return;
     }
     
-    // Here you would typically submit the test results
-    alert('Test submitted successfully!');
-    navigate('/'); // Navigate back to home page
+    setIsSubmitted(true);
   };
 
   const handleTimeEnd = () => {
-    alert('Time is up! Your test has been submitted.');
-    handleSubmit();
+    alert('Time is up! Your test will be submitted automatically.');
+    setIsSubmitted(true);
   };
 
   const canGoPrevious = currentQuestionIndex > 0 || 
