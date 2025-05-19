@@ -1,10 +1,10 @@
-import { prisma as client, prisma } from "../utils/primaclient"
-import { timer } from "../utils/timer"
+import { prisma as client, prisma } from "../utils/primaclient.js"
+import { timer } from "../utils/timer.js"
 import { Request, Response } from "express"
-import { valkey } from "../utils/rislint"
+import { valkey } from "../utils/rislint.js"
 
 
-
+type Query = { type: 'startsWith' | 'equals'; value: string };
 export const getquestion = async (req: Request, res: Response):Promise<void> => {
     const { keywords, time, testid } = req.body
     const allotedtime = timer(time)
@@ -13,41 +13,57 @@ export const getquestion = async (req: Request, res: Response):Promise<void> => 
        return
     }
 
-    const queries = keywords.map((key: string) => {
-        if (key.length === 1) {
-          return { type: 'startsWith', value: key }; 
-        } else {
-          return { type: 'equals', value: key };  
-        }
-      });
-      
-      let conditions: string[] = [];
-      let values: any[] = [];
-      
-      
-      queries.forEach((q :any, idx :any) => {
-        const placeholder = `$${idx + 1}`; 
-        if (q.type === 'equals') {
-          conditions.push(`"identifier_id" = ${placeholder}`);  
-          values.push(q.value);
-        } else {
-          conditions.push(`"identifier_id" LIKE ${placeholder}`); 
-          values.push(q.value + '%');  
-        }
-      });
-      
-      const whereClause = conditions.join(' OR '); 
-      
-      const questions = await client.$queryRaw(
-        `
-        SELECT * FROM "question"
-        WHERE ${whereClause}  // Dynamic WHERE condition
-        ORDER BY RANDOM()  // Randomize the results
-        LIMIT ${allotedtime};  // Limit the number of results (based on allotted time)
-        `,
-        ...values  // Spread the values for parameterized query
-      );
-      
+    
+
+  type Query = {
+  type: 'equals' | 'startsWith';
+  value: string;
+};
+
+const queries: Query[] = keywords.map((key: string) =>
+  key.length === 1
+    ? { type: 'startsWith', value: key }
+    : { type: 'equals', value: key }
+);
+
+let conditions: string[] = [];
+let values: any[] = [];
+
+queries.forEach((q, idx) => {
+  const placeholder = `$${idx + 1}`;
+  if (q.type === 'equals') {
+    conditions.push(`"identifier_id" = ${placeholder}`);
+    values.push(q.value);
+  } else {
+    conditions.push(`"identifier_id" LIKE ${placeholder}`);
+    values.push(q.value + '%');
+  }
+});
+
+if (conditions.length === 0) {
+  throw new Error('No valid keywords provided.');
+}
+
+const whereClause = conditions.join(' OR ');
+
+// Validate and parse limit
+const limit = allotedtime
+if (isNaN(limit) || limit <= 0) throw new Error('Invalid limit');
+
+// Final query string with LIMIT as the last placeholder
+const rawQuery = `
+  SELECT * FROM "Question"
+  WHERE ${whereClause}
+  ORDER BY RANDOM()
+  LIMIT $${values.length + 1}
+`;
+
+// Add limit to values array
+values.push(limit);
+
+// Execute raw query safely
+const questions: any = await client.$queryRawUnsafe(rawQuery, ...values);
+
       
       
       
@@ -81,11 +97,11 @@ return
 
 export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
     const {answer,testid} = req.body
-    const verifiedAnswersString = await valkey.get(testid)
-    let verifiedAnswers 
-     if (verifiedAnswersString) {
-        verifiedAnswers = JSON.parse(verifiedAnswersString); 
-     }
+    const verifiedAnswers = await valkey.get(testid)
+    // let verifiedAnswers 
+    //  if (verifiedAnswersString) {
+    //     verifiedAnswers = JSON.parse(verifiedAnswersString); 
+    //  }
 
 
 
@@ -95,7 +111,7 @@ if(!verifiedAnswers){
 }
 let count = 0;
 for(const answerval in answer){
-    if(answer[answerval] === verifiedAnswers[answerval].correct_option){
+    if(answer[answerval] === verifiedAnswers[answerval]?.correct_option){
         count++
     }
 }

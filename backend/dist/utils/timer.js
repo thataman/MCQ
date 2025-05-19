@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.timer = void 0;
-const timer = (time) => {
+export const timer = (time) => {
     switch (time) {
         case "15":
             return 15;
@@ -20,4 +17,3 @@ const timer = (time) => {
     }
     return 0;
 };
-exports.timer = timer;

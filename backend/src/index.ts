@@ -2,7 +2,7 @@
 import express, { Router } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import questionrouter from './routes/questionrouter';
+import questionrouter from './routes/questionrouter.js';
 // Load environment variables from .env file
 dotenv.config();
 const app = express();

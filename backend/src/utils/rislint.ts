@@ -1,8 +1,13 @@
-import  Dotenv  from "dotenv";
-import Valkey from "ioredis"
+import { error } from "console";
+import  Dotenv  from "dotenv"
+import {Redis} from "ioredis"
 Dotenv.config()
 
 const serviceUrl = process.env.serviceUri
 
-export const valkey = new Valkey(serviceUrl ?? "");
+if (!serviceUrl) {
+    throw new Error("not got rwntials")
+}
+export const valkey = new Redis(serviceUrl);
+
 

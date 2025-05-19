@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const questioncontroller_1 = require("../controllers/questioncontroller");
-const questionrouter = (0, express_1.Router)();
-questionrouter.post("/getquestion", questioncontroller_1.getquestion);
-questionrouter.post("/verifyAnswer", questioncontroller_1.verifyquestion);
-exports.default = questionrouter;
+import { Router } from "express";
+import { getquestion, verifyquestion } from "../controllers/questioncontroller.js";
+const questionrouter = Router();
+questionrouter.post("/getquestion", getquestion);
+questionrouter.post("/verifyAnswer", verifyquestion);
+export default questionrouter;

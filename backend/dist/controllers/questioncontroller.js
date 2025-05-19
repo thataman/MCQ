@@ -1,24 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyquestion = exports.getquestion = void 0;
-const primaclient_1 = require("../utils/primaclient");
-const timer_1 = require("../utils/timer");
-const rislint_1 = require("../utils/rislint");
-const getquestion = async (req, res) => {
+import { prisma as client } from "../utils/primaclient.js";
+import { timer } from "../utils/timer.js";
+import { valkey } from "../utils/rislint.js";
+export const getquestion = async (req, res) => {
     const { keywords, time, testid } = req.body;
-    const allotedtime = (0, timer_1.timer)(time);
+    const allotedtime = timer(time);
     if (allotedtime === 0) {
         res.json({ error: "Wrong time allotted" });
         return;
     }
-    const queries = keywords.map((key) => {
-        if (key.length === 1) {
-            return { type: 'startsWith', value: key };
-        }
-        else {
-            return { type: 'equals', value: key };
-        }
-    });
+    const queries = keywords.map((key) => key.length === 1
+        ? { type: 'startsWith', value: key }
+        : { type: 'equals', value: key });
     let conditions = [];
     let values = [];
     queries.forEach((q, idx) => {
@@ -32,14 +24,25 @@ const getquestion = async (req, res) => {
             values.push(q.value + '%');
         }
     });
+    if (conditions.length === 0) {
+        throw new Error('No valid keywords provided.');
+    }
     const whereClause = conditions.join(' OR ');
-    const questions = await primaclient_1.prisma.$queryRaw(`
-        SELECT * FROM "question"
-        WHERE ${whereClause}  // Dynamic WHERE condition
-        ORDER BY RANDOM()  // Randomize the results
-        LIMIT ${allotedtime};  // Limit the number of results (based on allotted time)
-        `, ...values // Spread the values for parameterized query
-    );
+    // Validate and parse limit
+    const limit = allotedtime;
+    if (isNaN(limit) || limit <= 0)
+        throw new Error('Invalid limit');
+    // Final query string with LIMIT as the last placeholder
+    const rawQuery = `
+  SELECT * FROM "Question"
+  WHERE ${whereClause}
+  ORDER BY RANDOM()
+  LIMIT $${values.length + 1}
+`;
+    // Add limit to values array
+    values.push(limit);
+    // Execute raw query safely
+    const questions = await client.$queryRawUnsafe(rawQuery, ...values);
     const withoutanswer = questions.map((e) => ({
         "id": e.id,
         "question": e.question,
@@ -58,18 +61,17 @@ const getquestion = async (req, res) => {
         };
         return acc;
     }, {});
-    rislint_1.valkey.set(testid, answersexplanation);
+    valkey.set(testid, answersexplanation);
     res.status(200).json(withoutanswer);
     return;
 };
-exports.getquestion = getquestion;
-const verifyquestion = async (req, res) => {
+export const verifyquestion = async (req, res) => {
     const { answer, testid } = req.body;
-    const verifiedAnswersString = await rislint_1.valkey.get(testid);
-    let verifiedAnswers;
-    if (verifiedAnswersString) {
-        verifiedAnswers = JSON.parse(verifiedAnswersString);
-    }
+    const verifiedAnswers = await valkey.get(testid);
+    // let verifiedAnswers 
+    //  if (verifiedAnswersString) {
+    //     verifiedAnswers = JSON.parse(verifiedAnswersString); 
+    //  }
     if (!verifiedAnswers) {
         res.json("ansers not found");
         return;
@@ -83,4 +85,3 @@ const verifyquestion = async (req, res) => {
     res.status(200).json({ count });
     return;
 };
-exports.verifyquestion = verifyquestion;
