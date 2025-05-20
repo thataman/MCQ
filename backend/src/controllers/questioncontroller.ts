@@ -89,19 +89,42 @@ const questions: any = await client.$queryRawUnsafe(rawQuery, ...values);
         },
         {} 
       );
-      
-      valkey.set(testid, answersexplanation);
+      const testidtoString = JSON.stringify(testid)
+      valkey.set(testidtoString, JSON.stringify(answersexplanation));
    res.status(200).json(withoutanswer)
 return
 }
 
+interface answermap{
+correct_option:string , 
+explanation : string
+}
+
+interface answerobject{
+  [id:string] : answermap
+}
+
 export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
-    const {answer,testid} = req.body
-    const verifiedAnswers = await valkey.get(testid)
-    // let verifiedAnswers 
-    //  if (verifiedAnswersString) {
-    //     verifiedAnswers = JSON.parse(verifiedAnswersString); 
-    //  }
+    const {answer ,testid} = req.body
+    const testidtoString = JSON.stringify(testid)
+    
+    
+    let verifiedAnswers
+    const verifiedAnswersString = await valkey.get(testidtoString)
+    if (verifiedAnswersString) {
+     verifiedAnswers = JSON.parse(verifiedAnswersString)
+    }
+    console.log(verifiedAnswers);
+    
+//     let verifiedAnswers 
+//     console.log(verifiedAnswersString);
+    
+//      if (verifiedAnswersString) {
+//         verifiedAnswers = JSON.parse(verifiedAnswersString || "{}"); 
+//      }
+
+
+
 
 
 
@@ -111,7 +134,7 @@ if(!verifiedAnswers){
 }
 let count = 0;
 for(const answerval in answer){
-    if(answer[answerval] === verifiedAnswers[answerval]?.correct_option){
+    if(answer[answerval] === verifiedAnswers[answerval]?.correct_option ){
         count++
     }
 }
