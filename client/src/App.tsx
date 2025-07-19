@@ -7,7 +7,7 @@ import TestGenerator from './components/test/TestGenerator';
 import About from './components/About';
 import Features from './components/Features';
 import { mockTest } from './data/mockData';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider } from '@/components/theme-provider';
 
 function App() {
   return (

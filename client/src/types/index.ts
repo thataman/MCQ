@@ -34,4 +34,12 @@ export interface UserProgress {
   timeRemaining: number;
 }
 
+
+export interface generatePayload {
+  keywords: string[];
+  time: string;
+  testId: string;
+}
+
+
 export type ThemeMode = 'light' | 'dark';
