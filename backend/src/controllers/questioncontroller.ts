@@ -2,11 +2,14 @@ import { prisma as client, prisma } from "../utils/primaclient.js"
 import { timer } from "../utils/timer.js"
 import { Request, Response } from "express"
 import { valkey } from "../utils/rislint.js"
+import generateSuperheroTestTitle from "../utils/testtitle.js"
 
 
 type Query = { type: 'startsWith' | 'equals'; value: string };
 export const getquestion = async (req: Request, res: Response):Promise<void> => {
     const { keywords, time, testid } = req.body
+    console.log(req.body);
+    
     const allotedtime = timer(time)
     if (allotedtime === 0) {
        res.json({ error: "Wrong time allotted" });
@@ -91,7 +94,15 @@ const questions: any = await client.$queryRawUnsafe(rawQuery, ...values);
       );
       const testidtoString = JSON.stringify(testid)
       valkey.set(testidtoString, JSON.stringify(answersexplanation));
-   res.status(200).json(withoutanswer)
+      const payload = {
+        "testId": testid,
+        "title": generateSuperheroTestTitle(),
+        "timeLimit": limit,
+        "questions": withoutanswer
+      }
+     // console.log("Generated test payload:", payload);
+      
+   res.status(200).json(payload)
 return
 }
 

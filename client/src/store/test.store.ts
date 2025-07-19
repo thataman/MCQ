@@ -15,14 +15,21 @@ type Question = {
   id: number;
 }
 
+interface responseFromApi {
+  id: string;
+  title: string;
+  timeLimit: number;
+  questions: Question[];
+}
+
 interface Test {
   time: string;
   setTime: (time: string) => void;
   keyword: string[];
   setKeywords: (keyword: string[]) => void;
   removeKeywords: () => void;
-  question: Question[];
-  setQuestion: (questions: Question[]) => void;
+  question: responseFromApi;
+  setQuestion: (questions: responseFromApi) => void;
 }
 
 /*
@@ -46,6 +53,11 @@ export const useTest = create<Test>((set) => ({
       })
   },
 
-  question: [],
+  question:{
+    id: "",
+    title: "",
+    timeLimit: 0,
+    questions: []
+  } as responseFromApi,
   setQuestion: (questions) => set(() => ({ question: questions }))
 }));

@@ -38,7 +38,7 @@ export interface UserProgress {
 export interface generatePayload {
   keywords: string[];
   time: string;
-  testId: string;
+  testid: string;
 }
 
 
