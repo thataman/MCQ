@@ -1,8 +1,10 @@
 import { prisma as client } from "../utils/primaclient.js";
 import { timer } from "../utils/timer.js";
 import { valkey } from "../utils/rislint.js";
+import generateSuperheroTestTitle from "../utils/testtitle.js";
 export const getquestion = async (req, res) => {
     const { keywords, time, testid } = req.body;
+    console.log(req.body);
     const allotedtime = timer(time);
     if (allotedtime === 0) {
         res.json({ error: "Wrong time allotted" });
@@ -63,7 +65,14 @@ export const getquestion = async (req, res) => {
     }, {});
     const testidtoString = JSON.stringify(testid);
     valkey.set(testidtoString, JSON.stringify(answersexplanation));
-    res.status(200).json(withoutanswer);
+    const payload = {
+        "testId": testid,
+        "title": generateSuperheroTestTitle(),
+        "timeLimit": limit,
+        "questions": withoutanswer
+    };
+    // console.log("Generated test payload:", payload);
+    res.status(200).json(payload);
     return;
 };
 export const verifyquestion = async (req, res) => {

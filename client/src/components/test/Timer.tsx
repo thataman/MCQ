@@ -60,7 +60,7 @@ const Timer: React.FC<TimerProps> = ({ timeRemaining, onTimeEnd, isPaused }) => 
   };
 
   return (
-    <div className={`flex items-center space-x-2 px-3 py-2 rounded-md ${getTimerColor()}`}>
+    <div className={`flex items-center space-x-2 px-2 py-1.5 rounded-md ${getTimerColor()}`}>
       <Clock className="h-4 w-4" />
       <span className="font-mono">{formatTime(seconds)}</span>
     </div>
