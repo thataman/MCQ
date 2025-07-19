@@ -1,16 +1,9 @@
-import React from 'react';
+
 import { CircleDot } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
-import { ThemeMode } from '../types';
-
-interface NavbarProps {
-  theme: ThemeMode;
-  toggleTheme: () => void;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
+import { ModeToggle } from './mode-toggle';
+const Navbar = () => {
   return (
-    <nav className={`p-4 shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+    <nav className={`dark:bg-gray-800 broder bottom-2 border-white shadow-md p-4`}>
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <CircleDot className="h-6 w-6 text-purple-600" />
@@ -25,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
         </div>
         
         <div className="flex items-center space-x-4">
-          <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+          <ModeToggle />
           <button className="px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors">
             Sign In
           </button>
