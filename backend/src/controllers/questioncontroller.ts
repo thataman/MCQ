@@ -117,6 +117,9 @@ interface answerobject{
 
 export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
     const {answer ,testid} = req.body
+
+    console.log(req.body, "verifyquestion called");
+    
     const testidtoString = JSON.stringify(testid)
     
     
@@ -150,6 +153,12 @@ for(const answerval in answer){
     }
 }
 
-     res.status(200).json({count})
+const payload = {
+    "testId": testid,
+    "correctAnswers": count,
+    "explanations": verifiedAnswers
+}
+
+     res.status(200).json(payload)
      return
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 //import { useNavigate } from 'react-router-dom';
 import QuestionsList from './QuestionsList';
 import QuestionDisplay from './QuestionDisplay';
@@ -9,6 +9,7 @@ import { ModeToggle } from '../mode-toggle';
 import { useTest } from '@/store/test.store';
 import TestResults from './TestResults';
 import StudentLoader from '../Loader';
+import { verifyAnswers } from '@/api/Test';
 
 interface Question {
   id: number;
@@ -23,7 +24,7 @@ interface Question {
 }
 
 interface Test {
-  id: string;
+  testId: string;
   title: string;
   timeLimit: number;
   questions: Question[];
@@ -43,16 +44,27 @@ interface UserProgress {
   timeRemaining: number;
 }
 
-interface TestPlatformProps {
-  test: Test;
+interface userSelection {
+  testid: string;
+  answers: { [key: string]: string }; 
 }
 
-
-const TestPlatform: React.FC<TestPlatformProps> = () => {
+const TestPlatform = () => {
  // const navigate = useNavigate();
 
   
   const test: Test = useTest(state => state.question);
+
+  const setUserSelectedAnswer = useTest(state => state.setUserSelectedAnswer);
+  const removeUserSelectedAnswer = useTest(state => state.removeUserSelectedAnswer);  
+  const userSelection = useTest(state => state.userSelection);
+
+  const setStateAfterTestSubmit = useTest(state => state.setStateAfterTestSubmit);
+  
+
+ 
+
+  
 
   const firstQuestionId = test.questions[0]?.id || 0;
   
@@ -65,6 +77,7 @@ const TestPlatform: React.FC<TestPlatformProps> = () => {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [loading , setLoading] = useState(false);
 
   useEffect(() => {
     if (Object.keys(progress.statusMap).length === 0) {
@@ -86,9 +99,20 @@ const TestPlatform: React.FC<TestPlatformProps> = () => {
     }
   }, [test, progress.statusMap]);
 
+ if (!test || !test.questions || test.questions.length === 0) {
+    return <StudentLoader loadingText='Loading test...' isVisible={!test} />;
+  }
+
   if (isSubmitted) {
     return <TestResults test={test} statusMap={progress.statusMap} />;
   }
+
+  if(loading){
+    return <StudentLoader loadingText='Submitting test...' isVisible={loading} />;
+  }
+
+//console.log(progress, "progress in TestPlatform");
+
 
   const currentQuestion = test.questions.find(q => q.id === progress.currentQuestionId);
   const currentQuestionIndex = test.questions.findIndex(q => q.id === progress.currentQuestionId);
@@ -135,6 +159,9 @@ const TestPlatform: React.FC<TestPlatformProps> = () => {
         },
       },
     }));
+     setUserSelectedAnswer({
+      [progress.currentQuestionId.toString()]: optionKey,
+    }, test.testId);
   };
 
   const handleClearOption = () => {
@@ -150,10 +177,13 @@ const TestPlatform: React.FC<TestPlatformProps> = () => {
         },
       },
     }));
+     removeUserSelectedAnswer({
+      [progress.currentQuestionId.toString()]: progress.statusMap[progress.currentQuestionId].selectedOption || '',
+    }, test.testId); 
   };
 
-  const handleSubmit = () => {
-    const totalQuestions = test.questions.length;
+  const handleSubmit = async() => {
+   /*  const totalQuestions = test.questions.length;
     const attempted = Object.values(progress.statusMap).filter(status => status.attempted).length;
     
     if (attempted < totalQuestions) {
@@ -161,9 +191,20 @@ const TestPlatform: React.FC<TestPlatformProps> = () => {
         `You have only attempted ${attempted} out of ${totalQuestions} questions. Are you sure you want to submit?`
       );
       if (!confirmSubmit) return;
+    } */
+
+      setLoading(true)
+  const res =  await verifyAnswers(userSelection as userSelection)
+  if(res){
+    if (setStateAfterTestSubmit) {
+      setStateAfterTestSubmit(res);
+      setLoading(false)
+      setIsSubmitted(true);
+      
     }
+  }
     
-    setIsSubmitted(true);
+    
   };
 
   const handleTimeEnd = () => {

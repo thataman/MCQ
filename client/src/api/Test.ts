@@ -15,3 +15,18 @@ export const generateTest = async (payload: generatePayload) => {
     throw error;
   }
 };
+
+interface userSelection {
+  testid: string;
+  answers: { [key: string]: string }; 
+}
+
+export const verifyAnswers = async (payload: userSelection) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/question/verifyAnswer`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("Error verifying answers:", error);
+    throw error;
+  }
+};
