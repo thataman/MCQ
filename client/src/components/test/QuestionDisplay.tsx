@@ -68,38 +68,35 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
           onValueChange={onSelectOption}
           className="space-y-1"
         >
-          {optionKeys.map((optionKey) => (
-            <div key={optionKey} className="space-y-1">
-              <div className="flex items-start space-x-3 rounded-md border bg-muted/50 border-border p-3">
-                <RadioGroupItem 
-                  value={optionKey} 
-                  id={`option-${optionKey}`}
-                  className="mt-1"
-                />
-                <Label 
-                  htmlFor={`option-${optionKey}`} 
-                  className="flex-1 cursor-pointer text-sm leading-relaxed"
-                >
-                  <span className="font-semibold text-primary mr-2">{optionKey}.</span>
-                  {question.options[optionKey]}
-                </Label>
-              </div>
-            </div>
-          ))}
-        </RadioGroup>
-        
-        {status.selectedOption && (
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center space-x-2">
-              <Badge variant="outline" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                Selected
-              </Badge>
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                Option {status.selectedOption}: {question.options[status.selectedOption as keyof typeof question.options]}
-              </span>
+          {optionKeys.map((optionKey) => {
+        const isSelected = status.selectedOption === optionKey;
+        return (
+          <div 
+            key={optionKey} 
+            className={`space-y-1 transition-all ${
+              isSelected ? "border-primary bg-primary/10" : "border-border bg-muted/50"
+            } rounded-md border p-3`}
+          >
+            <div className="flex items-start space-x-3">
+              <RadioGroupItem 
+                value={optionKey} 
+                id={`option-${optionKey}`} 
+                className="mt-1"
+              />
+              <Label 
+                htmlFor={`option-${optionKey}`} 
+                className="flex-1 cursor-pointer text-sm leading-relaxed"
+              >
+                <span className="font-semibold text-primary mr-2">{optionKey}.</span>
+                {question.options[optionKey]}
+              </Label>
+              {isSelected && <Badge >Selected</Badge>}
             </div>
           </div>
-        )}
+        );
+      })}
+        </RadioGroup>
+
       </CardContent>
     </Card>
   );

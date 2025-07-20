@@ -16,10 +16,21 @@ type Question = {
 }
 
 interface responseFromApi {
-  id: string;
+  testId: string;
   title: string;
   timeLimit: number;
   questions: Question[];
+}
+
+interface userSelection {
+  testid: string;
+  answers: { [key: string]: string }; 
+}
+
+interface stateAfterTestSubmit {
+  testId: string;
+  correctAnswers: number;
+  explanations: string; 
 }
 
 interface Test {
@@ -30,7 +41,14 @@ interface Test {
   removeKeywords: () => void;
   question: responseFromApi;
   setQuestion: (questions: responseFromApi) => void;
+  userSelection?: userSelection;
+  // This can be used to store user's selected answers for the test
+  setUserSelectedAnswer : ( answer: { [key: string]: string },testid:string) => void;
+  removeUserSelectedAnswer: (answer: { [key: string]: string },testid:string) => void;
+  stateAfterTestSubmit?: stateAfterTestSubmit;
+  setStateAfterTestSubmit?: (state: stateAfterTestSubmit) => void;
 }
+
 
 /*
 
@@ -54,10 +72,29 @@ export const useTest = create<Test>((set) => ({
   },
 
   question:{
-    id: "",
+    testId: "",
     title: "",
     timeLimit: 0,
     questions: []
   } as responseFromApi,
-  setQuestion: (questions) => set(() => ({ question: questions }))
+  setQuestion: (questions) => set(() => ({ question: questions })),
+
+
+  userSelection: undefined,
+  setUserSelectedAnswer: (answer,testid) => set((state) => ({ userSelection: { 
+    testid: testid,
+    answers: { ...state.userSelection?.answers, ...answer }
+  } })),
+  removeUserSelectedAnswer: (answer,testid) => set((state) => {
+    const updatedAnswers = { ...state.userSelection?.answers };
+    Object.keys(answer).forEach(key => {
+      delete updatedAnswers[key];
+    });
+    return { userSelection: { testid: testid, answers: updatedAnswers } };
+
+  }),
+
+  stateAfterTestSubmit: undefined,
+  setStateAfterTestSubmit: (state) => set(() => ({ stateAfterTestSubmit: state })),
+
 }));

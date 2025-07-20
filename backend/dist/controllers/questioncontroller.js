@@ -77,6 +77,7 @@ export const getquestion = async (req, res) => {
 };
 export const verifyquestion = async (req, res) => {
     const { answer, testid } = req.body;
+    console.log(req.body, "verifyquestion called");
     const testidtoString = JSON.stringify(testid);
     let verifiedAnswers;
     const verifiedAnswersString = await valkey.get(testidtoString);
@@ -99,6 +100,11 @@ export const verifyquestion = async (req, res) => {
             count++;
         }
     }
-    res.status(200).json({ count });
+    const payload = {
+        "testId": testid,
+        "correctAnswers": count,
+        "explanations": verifiedAnswers
+    };
+    res.status(200).json(payload);
     return;
 };

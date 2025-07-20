@@ -23,7 +23,7 @@ interface Question {
 }
 
 interface Test {
-  id: string;
+  testId: string;
   title: string;
   timeLimit: number;
   questions: Question[];
