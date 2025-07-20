@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight, RotateCcw, Send } from 'lucide-react';
+import { Button } from '../ui/button';
 
 interface TestControlsProps {
   onPrevious: () => void;
@@ -24,50 +25,47 @@ const TestControls: React.FC<TestControlsProps> = ({
 }) => {
   return (
     <div className="flex justify-end space-x-3 mt-6">
-      <button
+      <Button
         onClick={onPrevious}
         disabled={!canGoPrevious}
         className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all duration-300 transform hover:scale-105 ${
-          canGoPrevious
-            ? 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
-        }`}
+          !canGoPrevious && 'cursor-not-allowed'
+           }`}
       >
         <ArrowLeft className="h-4 w-4" />
         <span>Previous</span>
-      </button>
-      
+      </Button>
+
       {currentQuestionHasAnswer && (
-        <button
+        < Button
           onClick={onClear}
-          className="flex items-center space-x-2 px-4 py-2 rounded-md bg-red-100 dark:bg-red-900 dark:bg-opacity-20 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900 dark:hover:bg-opacity-30 transition-all duration-300 transform hover:scale-105"
+          variant={`destructive`}
+          className="flex items-center space-x-2 px-4 py-2 rounded-md  transition-all duration-300 transform hover:scale-105"
         >
           <RotateCcw className="h-4 w-4" />
           <span>Clear</span>
-        </button>
+        </Button>
       )}
       
       {isLastQuestion ? (
-        <button
+        <Button
           onClick={onSubmit}
           className="flex items-center space-x-2 px-6 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-all duration-300 transform hover:scale-105"
         >
           <Send className="h-4 w-4" />
           <span>Submit Test</span>
-        </button>
+        </Button>
       ) : (
-        <button
+        <Button
           onClick={onNext}
           disabled={!canGoNext}
           className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all duration-300 transform hover:scale-105 ${
-            canGoNext
-              ? 'bg-purple-600 text-white hover:bg-purple-700'
-              : 'bg-purple-300 dark:bg-purple-900 text-gray-100 cursor-not-allowed'
+            !canGoNext && 'cursor-not-allowed'
           }`}
         >
           <span>Next</span>
           <ArrowRight className="h-4 w-4" />
-        </button>
+        </Button>
       )}
     </div>
   );

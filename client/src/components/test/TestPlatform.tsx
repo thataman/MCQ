@@ -1,24 +1,74 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import  { useState, useEffect } from 'react';
+//import { useNavigate } from 'react-router-dom';
 import QuestionsList from './QuestionsList';
 import QuestionDisplay from './QuestionDisplay';
 import TestControls from './TestControls';
 import Timer from './Timer';
-import ProgressSummary from './ProgressSummary';
+import { Button } from '../ui/button';
+import { ModeToggle } from '../mode-toggle';
+import { useTest } from '@/store/test.store';
 import TestResults from './TestResults';
-import { Test, UserProgress, QuestionStatus } from '../../types';
+import StudentLoader from '../Loader';
+import { verifyAnswers } from '@/api/Test';
 
-interface TestPlatformProps {
-  test: Test;
+interface Question {
+  id: number;
+  question: string;
+  options: {
+    A: string;
+    B: string;
+    C: string;
+    D: string;
+    
+  };
 }
 
-const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
-  const navigate = useNavigate();
-  const firstCategoryId = test.categories[0]?.id || '';
-  const firstQuestionId = test.categories[0]?.questions[0]?.id || '';
+interface Test {
+  testId: string;
+  title: string;
+  timeLimit: number;
+  questions: Question[];
+}
+
+interface QuestionStatus {
+  id: number;
+  attempted: boolean;
+  completed: boolean;
+  selectedOption: string | null;
+}
+
+interface UserProgress {
+  currentQuestionId: number;
+  statusMap: Record<number, QuestionStatus>;
+  startTime: number;
+  timeRemaining: number;
+}
+
+interface userSelection {
+  testid: string;
+  answers: { [key: string]: string }; 
+}
+
+const TestPlatform = () => {
+ // const navigate = useNavigate();
+
+  
+  const test: Test = useTest(state => state.question);
+
+  const setUserSelectedAnswer = useTest(state => state.setUserSelectedAnswer);
+  const removeUserSelectedAnswer = useTest(state => state.removeUserSelectedAnswer);  
+  const userSelection = useTest(state => state.userSelection);
+
+  const setStateAfterTestSubmit = useTest(state => state.setStateAfterTestSubmit);
+  
+
+ 
+
+  
+
+  const firstQuestionId = test.questions[0]?.id || 0;
   
   const [progress, setProgress] = useState<UserProgress>({
-    currentCategoryId: firstCategoryId,
     currentQuestionId: firstQuestionId,
     statusMap: {},
     startTime: Date.now(),
@@ -27,20 +77,19 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [loading , setLoading] = useState(false);
 
   useEffect(() => {
     if (Object.keys(progress.statusMap).length === 0) {
-      const initialStatusMap: Record<string, QuestionStatus> = {};
+      const initialStatusMap: Record<number, QuestionStatus> = {};
       
-      test.categories.forEach(category => {
-        category.questions.forEach(question => {
-          initialStatusMap[question.id] = {
-            id: question.id,
-            attempted: false,
-            completed: false,
-            selectedOption: null,
-          };
-        });
+      test.questions.forEach(question => {
+        initialStatusMap[question.id] = {
+          id: question.id,
+          attempted: false,
+          completed: false,
+          selectedOption: null,
+        };
       });
       
       setProgress(prev => ({
@@ -50,13 +99,23 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
     }
   }, [test, progress.statusMap]);
 
+ if (!test || !test.questions || test.questions.length === 0) {
+    return <StudentLoader loadingText='Loading test...' isVisible={!test} />;
+  }
+
   if (isSubmitted) {
     return <TestResults test={test} statusMap={progress.statusMap} />;
   }
 
-  const currentCategory = test.categories.find(cat => cat.id === progress.currentCategoryId);
-  const currentQuestion = currentCategory?.questions.find(q => q.id === progress.currentQuestionId);
-  const currentQuestionIndex = currentCategory?.questions.findIndex(q => q.id === progress.currentQuestionId) || 0;
+  if(loading){
+    return <StudentLoader loadingText='Submitting test...' isVisible={loading} />;
+  }
+
+//console.log(progress, "progress in TestPlatform");
+
+
+  const currentQuestion = test.questions.find(q => q.id === progress.currentQuestionId);
+  const currentQuestionIndex = test.questions.findIndex(q => q.id === progress.currentQuestionId);
   const currentStatus = progress.statusMap[progress.currentQuestionId] || {
     id: progress.currentQuestionId,
     attempted: false,
@@ -64,50 +123,30 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
     selectedOption: null,
   };
 
-  const isLastQuestion = currentQuestionIndex === (currentCategory?.questions.length || 0) - 1 &&
-    test.categories.findIndex(cat => cat.id === progress.currentCategoryId) === test.categories.length - 1;
+  const isLastQuestion = currentQuestionIndex === test.questions.length - 1;
 
-  const handleSelectQuestion = (categoryId: string, questionId: string) => {
+  const handleSelectQuestion = (questionId: number) => {
     setProgress(prev => ({
       ...prev,
-      currentCategoryId: categoryId,
       currentQuestionId: questionId,
     }));
   };
 
   const handlePrevious = () => {
-    if (currentQuestionIndex === 0) {
-      const categoryIndex = test.categories.findIndex(cat => cat.id === progress.currentCategoryId);
-      if (categoryIndex > 0) {
-        const prevCategory = test.categories[categoryIndex - 1];
-        const lastQuestion = prevCategory.questions[prevCategory.questions.length - 1];
-        handleSelectQuestion(prevCategory.id, lastQuestion.id);
-      }
-    } else {
-      const prevQuestion = currentCategory?.questions[currentQuestionIndex - 1];
-      if (prevQuestion) {
-        handleSelectQuestion(progress.currentCategoryId, prevQuestion.id);
-      }
+    if (currentQuestionIndex > 0) {
+      const prevQuestion = test.questions[currentQuestionIndex - 1];
+      handleSelectQuestion(prevQuestion.id);
     }
   };
 
   const handleNext = () => {
-    if (currentQuestionIndex === (currentCategory?.questions.length || 0) - 1) {
-      const categoryIndex = test.categories.findIndex(cat => cat.id === progress.currentCategoryId);
-      if (categoryIndex < test.categories.length - 1) {
-        const nextCategory = test.categories[categoryIndex + 1];
-        const firstQuestion = nextCategory.questions[0];
-        handleSelectQuestion(nextCategory.id, firstQuestion.id);
-      }
-    } else {
-      const nextQuestion = currentCategory?.questions[currentQuestionIndex + 1];
-      if (nextQuestion) {
-        handleSelectQuestion(progress.currentCategoryId, nextQuestion.id);
-      }
+    if (currentQuestionIndex < test.questions.length - 1) {
+      const nextQuestion = test.questions[currentQuestionIndex + 1];
+      handleSelectQuestion(nextQuestion.id);
     }
   };
 
-  const handleSelectOption = (optionIndex: number) => {
+  const handleSelectOption = (optionKey: string) => {
     setProgress(prev => ({
       ...prev,
       statusMap: {
@@ -116,10 +155,13 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
           id: progress.currentQuestionId,
           attempted: true,
           completed: true,
-          selectedOption: optionIndex,
+          selectedOption: optionKey,
         },
       },
     }));
+     setUserSelectedAnswer({
+      [progress.currentQuestionId.toString()]: optionKey,
+    }, test.testId);
   };
 
   const handleClearOption = () => {
@@ -135,13 +177,13 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
         },
       },
     }));
+     removeUserSelectedAnswer({
+      [progress.currentQuestionId.toString()]: progress.statusMap[progress.currentQuestionId].selectedOption || '',
+    }, test.testId); 
   };
 
-  const handleSubmit = () => {
-    const totalQuestions = test.categories.reduce(
-      (total, category) => total + category.questions.length,
-      0
-    );
+  const handleSubmit = async() => {
+   /*  const totalQuestions = test.questions.length;
     const attempted = Object.values(progress.statusMap).filter(status => status.attempted).length;
     
     if (attempted < totalQuestions) {
@@ -149,9 +191,20 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
         `You have only attempted ${attempted} out of ${totalQuestions} questions. Are you sure you want to submit?`
       );
       if (!confirmSubmit) return;
+    } */
+
+      setLoading(true)
+  const res =  await verifyAnswers(userSelection as userSelection)
+  if(res){
+    if (setStateAfterTestSubmit) {
+      setStateAfterTestSubmit(res);
+      setLoading(false)
+      setIsSubmitted(true);
+      
     }
+  }
     
-    setIsSubmitted(true);
+    
   };
 
   const handleTimeEnd = () => {
@@ -159,53 +212,51 @@ const TestPlatform: React.FC<TestPlatformProps> = ({ test }) => {
     setIsSubmitted(true);
   };
 
-  const canGoPrevious = currentQuestionIndex > 0 || 
-    test.categories.findIndex(cat => cat.id === progress.currentCategoryId) > 0;
-  const canGoNext = currentQuestionIndex < (currentCategory?.questions.length || 0) - 1 || 
-    test.categories.findIndex(cat => cat.id === progress.currentCategoryId) < test.categories.length - 1;
+  const canGoPrevious = currentQuestionIndex > 0;
+  const canGoNext = currentQuestionIndex < test.questions.length - 1;
 
-  let overallQuestionNumber = 1;
-  for (const category of test.categories) {
-    if (category.id === progress.currentCategoryId) {
-      overallQuestionNumber += currentQuestionIndex;
-      break;
-    }
-    overallQuestionNumber += category.questions.length;
-  }
+  const overallQuestionNumber = currentQuestionIndex + 1;
 
   if (!currentQuestion) {
-    return <div>Loading...</div>;
+    return <StudentLoader loadingText='Loading question...' isVisible={!currentQuestion} />;
   }
 
   return (
-    <div className="h-[calc(100vh-160px)] flex flex-col md:flex-row gap-6">
+    <div className="h-[calc(100vh-40px)] flex flex-col md:flex-row gap-6 m-3">
       <div className="w-full md:w-1/3 lg:w-1/4 h-full flex flex-col space-y-4">
         <QuestionsList
-          categories={test.categories}
-          currentCategoryId={progress.currentCategoryId}
+          questions={test.questions}
           currentQuestionId={progress.currentQuestionId}
           statusMap={progress.statusMap}
           onSelectQuestion={handleSelectQuestion}
         />
         
-        <ProgressSummary
-          categories={test.categories}
-          statusMap={progress.statusMap}
-        />
+
       </div>
       
       <div className="w-full md:w-2/3 lg:w-3/4 h-full flex flex-col">
         <div className="flex justify-between items-center mb-4">
           <div>
             <h2 className="text-xl font-bold">{test.title}</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Category: {currentCategory?.name}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Question {overallQuestionNumber} of {test.questions.length}
+            </p>
           </div>
-          
+          <div className="flex items-center space-x-4">
           <Timer
             timeRemaining={progress.timeRemaining}
             onTimeEnd={handleTimeEnd}
             isPaused={isPaused}
           />
+          <Button
+          
+            className=""
+            onClick={() => setIsPaused(!isPaused)}
+          >
+            {isPaused ? 'Resume' : 'Pause'}
+          </Button>
+          <ModeToggle />
+          </div>
         </div>
         
         <div className="flex-grow">
