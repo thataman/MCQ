@@ -7,9 +7,9 @@ import Timer from './Timer';
 import { Button } from '../ui/button';
 import { ModeToggle } from '../mode-toggle';
 import { useTest } from '@/store/test.store';
-import TestResults from './TestResults';
 import StudentLoader from '../Loader';
 import { verifyAnswers } from '@/api/Test';
+import { useNavigate } from 'react-router-dom';
 
 interface Question {
   id: number;
@@ -50,7 +50,7 @@ interface userSelection {
 }
 
 const TestPlatform = () => {
- // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   
   const test: Test = useTest(state => state.question);
@@ -75,7 +75,7 @@ const TestPlatform = () => {
     timeRemaining: test.timeLimit * 60,
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
+ 
   const [isPaused, setIsPaused] = useState(false);
   const [loading , setLoading] = useState(false);
 
@@ -101,10 +101,6 @@ const TestPlatform = () => {
 
  if (!test || !test.questions || test.questions.length === 0) {
     return <StudentLoader loadingText='Loading test...' isVisible={!test} />;
-  }
-
-  if (isSubmitted) {
-    return <TestResults test={test} statusMap={progress.statusMap} />;
   }
 
   if(loading){
@@ -199,17 +195,29 @@ const TestPlatform = () => {
     if (setStateAfterTestSubmit) {
       setStateAfterTestSubmit(res);
       setLoading(false)
-      setIsSubmitted(true);
+      
+
+      // save the state in session storage
+
+    sessionStorage.setItem('testState', JSON.stringify({
+    test:test,
+    statusMap: progress.statusMap,
+  }));
+    
+  //navigate to the results page
+      navigate(`/test-results/${test.testId}`);
       
     }
   }
-    
+
+  
+
     
   };
 
   const handleTimeEnd = () => {
     alert('Time is up! Your test will be submitted automatically.');
-    setIsSubmitted(true);
+    handleSubmit();
   };
 
   const canGoPrevious = currentQuestionIndex > 0;

@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, CheckCircle, XCircle, AlertCircle, Trophy, Target, TrendingUp } from 'lucide-react';
+import { Home, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
+import { ModeToggle } from '../mode-toggle';
 import QuestionsList from './QuestionsList';
+
+import { useTest } from '@/store/test.store';
 
 interface Question {
   id: number;
@@ -41,20 +42,27 @@ interface TestResultsProps {
   statusMap: Record<number, QuestionStatus>;
 }
 
-const TestResults: React.FC<TestResultsProps> = ({ test, statusMap }) => {
+const TestResults= () => {
   const navigate = useNavigate();
+
+  const {stateAfterTestSubmit} = useTest(state => state);
+
+  const dataFromSession = sessionStorage.getItem('testState') ;
+ 
+  const { test, statusMap }:TestResultsProps = JSON.parse(dataFromSession || '{}');
+  
   const [currentQuestionId, setCurrentQuestionId] = useState(test.questions[0]?.id || 0);
   
-  // Calculate overall statistics
+  
   const totalQuestions = test.questions.length;
-  const attemptedQuestions = Object.values(statusMap).filter(status => status.attempted).length;
+ // const attemptedQuestions = Object.values(statusMap).filter(status => status.attempted).length;
   const correctAnswers = Object.values(statusMap).filter(
     status => status.selectedOption !== null && 
     test.questions.find(q => q.id === status.id)?.correctAnswer === status.selectedOption
   ).length;
   
   const percentage = Math.round((correctAnswers / totalQuestions) * 100);
-  const attemptedPercentage = Math.round((attemptedQuestions / totalQuestions) * 100);
+  //const attemptedPercentage = Math.round((attemptedQuestions / totalQuestions) * 100);
 
   useEffect(() => {
     if (percentage >= 70) {
@@ -93,10 +101,11 @@ const TestResults: React.FC<TestResultsProps> = ({ test, statusMap }) => {
   if (!currentQuestion) return null;
 
   const status = statusMap[currentQuestionId];
-  const isCorrect = status?.selectedOption === currentQuestion.correctAnswer;
+  const correctOption = stateAfterTestSubmit?.explanations[currentQuestionId]?.correct_option;
+  const isCorrect = status?.selectedOption === correctOption;
   const wasAttempted = status?.attempted || false;
-
-  const getPerformanceColor = (percentage: number) => {
+  
+/*   const getPerformanceColor = (percentage: number) => {  
     if (percentage >= 80) return 'text-green-600 dark:text-green-400';
     if (percentage >= 60) return 'text-yellow-600 dark:text-yellow-400';
     return 'text-red-600 dark:text-red-400';
@@ -106,57 +115,14 @@ const TestResults: React.FC<TestResultsProps> = ({ test, statusMap }) => {
     if (percentage >= 80) return 'Excellent Performance!';
     if (percentage >= 60) return 'Good Performance!';
     return 'Needs Improvement';
-  };
+  }; */
 
   return (
     <div className="min-h-screen bg-background p-4">
       {/* Fixed Score Summary Header */}
-      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-4xl px-4">
-        <Card className="bg-background/95 backdrop-blur-sm border shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <Trophy className={`h-6 w-6 ${getPerformanceColor(percentage)}`} />
-                  <div className="text-center">
-                    <div className={`text-2xl font-bold ${getPerformanceColor(percentage)}`}>
-                      {percentage}%
-                    </div>
-                    <div className="text-xs text-muted-foreground">Score</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-green-500" />
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-green-600 dark:text-green-400">
-                      {correctAnswers}/{totalQuestions}
-                    </div>
-                    <div className="text-xs text-muted-foreground">Correct</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-blue-500" />
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                      {attemptedPercentage}%
-                    </div>
-                    <div className="text-xs text-muted-foreground">Attempted</div>
-                  </div>
-                </div>
-              </div>
-              <Badge 
-                variant={percentage >= 70 ? "default" : "destructive"}
-                className="text-sm px-3 py-1"
-              >
-                {getPerformanceMessage(percentage)}
-              </Badge>
-            </div>
-            <Progress value={percentage} className="mt-3 h-2" />
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="pt-32 flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
+    
+      
+      <div className=" flex flex-col lg:flex-row gap-6 mx-auto">
         {/* Questions List */}
         <div className="w-full lg:w-1/3">
           <QuestionsList
@@ -168,7 +134,7 @@ const TestResults: React.FC<TestResultsProps> = ({ test, statusMap }) => {
         </div>
 
         {/* Question Review */}
-        <div className="w-full lg:w-2/3 space-y-6">
+        <div className="w-full lg:w-2/3 space-y-6 flex flex-col justify-between">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -200,12 +166,12 @@ const TestResults: React.FC<TestResultsProps> = ({ test, statusMap }) => {
                 <p className="text-base leading-relaxed">{currentQuestion.question}</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {Object.entries(currentQuestion.options).map(([optionKey, optionText]) => (
                   <div
                     key={optionKey}
-                    className={`p-4 rounded-lg border ${
-                      optionKey === currentQuestion.correctAnswer
+                    className={`px-4 py-3 rounded-lg border ${
+                      optionKey === stateAfterTestSubmit?.explanations[currentQuestionId]?.correct_option && isCorrect
                         ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-950/20 dark:border-green-800 dark:text-green-300'
                         : optionKey === status?.selectedOption && !isCorrect
                         ? 'bg-red-50 border-red-200 text-red-700 dark:bg-red-950/20 dark:border-red-800 dark:text-red-300'
@@ -215,7 +181,7 @@ const TestResults: React.FC<TestResultsProps> = ({ test, statusMap }) => {
                     <div className="flex items-start gap-3">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold">{optionKey}.</span>
-                        {optionKey === currentQuestion.correctAnswer && (
+                        {optionKey === stateAfterTestSubmit?.explanations[currentQuestionId]?.correct_option && (
                           <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
                         )}
                         {optionKey === status?.selectedOption && !isCorrect && (
@@ -223,12 +189,12 @@ const TestResults: React.FC<TestResultsProps> = ({ test, statusMap }) => {
                         )}
                       </div>
                       <span className="flex-1">{optionText}</span>
-                      {optionKey === currentQuestion.correctAnswer && (
+                      {optionKey === stateAfterTestSubmit?.explanations[currentQuestionId]?.correct_option && (
                         <Badge variant="outline" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                           Correct Answer
                         </Badge>
                       )}
-                      {optionKey === status?.selectedOption && optionKey !== currentQuestion.correctAnswer && (
+                      {optionKey === status?.selectedOption && optionKey !== stateAfterTestSubmit?.explanations[currentQuestionId]?.correct_option && (
                         <Badge variant="outline" className="bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
                           Your Answer
                         </Badge>
@@ -238,43 +204,38 @@ const TestResults: React.FC<TestResultsProps> = ({ test, statusMap }) => {
                 ))}
               </div>
 
-              <Alert className={isCorrect ? "border-green-200 bg-green-50 dark:bg-green-950/20" : "border-blue-200 bg-blue-50 dark:bg-blue-950/20"}>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  {wasAttempted ? (
-                    isCorrect ? (
-                      "Great job! You selected the correct answer."
-                    ) : (
-                      `The correct answer is "${currentQuestion.options[currentQuestion.correctAnswer as keyof typeof currentQuestion.options]}". Review this concept for better understanding.`
-                    )
-                  ) : (
-                    "You didn't attempt this question. Make sure to answer all questions to maximize your score."
-                  )}
-                </AlertDescription>
-              </Alert>
+             <div className="space-y-2 h-full">
+              <h5>Explanation:</h5>
+              <p>{stateAfterTestSubmit?.explanations[currentQuestionId]?.explanation}</p>
+             </div>
             </CardContent>
           </Card>
 
           {/* Navigation Controls */}
           <div className="flex justify-between items-center">
+            <div className="flex items-center gap-4">
             <Button 
-              variant="outline" 
+              variant="secondary" 
               onClick={() => navigate('/')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-6 p-5"
             >
               <Home className="h-4 w-4" />
               Back to Home
             </Button>
+            <ModeToggle />
+            </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-6">
               <Button
-                variant="outline"
+              className='p-5'
+                variant="secondary"
                 onClick={handlePrevious}
                 disabled={!canGoPrevious}
               >
                 Previous
               </Button>
               <Button
+              className='p-5'
                 onClick={handleNext}
                 disabled={!canGoNext}
               >

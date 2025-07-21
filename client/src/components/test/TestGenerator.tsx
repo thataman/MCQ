@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookOpen } from "lucide-react";
 import {
@@ -173,7 +173,7 @@ const handleTestGenerate = async () => {
     setQuestion(response); 
     
     
-    navigate("/test");
+    navigate("/test/" + testid);
     
   } catch (error) {
     console.error("Error generating test:", error);

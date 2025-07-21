@@ -30,7 +30,7 @@ interface userSelection {
 interface stateAfterTestSubmit {
   testId: string;
   correctAnswers: number;
-  explanations: string; 
+  explanations: { [key: string]: { correct_option: string; explanation: string } }; 
 }
 
 interface Test {
