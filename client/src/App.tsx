@@ -5,8 +5,9 @@ import LandingPage from './components/LandingPage';
 import TestPlatform from './components/test/TestPlatform';
 import TestGenerator from './components/test/TestGenerator';
 import About from './components/About';
-import { mockTest } from './data/mockData';
+
 import { ThemeProvider } from '@/components/theme-provider';
+import TestResults from './components/test/TestResults';
 
 function App() {
   return (
@@ -19,8 +20,10 @@ function App() {
            
              <Route path="/generate" element={<TestGenerator />} />
              <Route path="/about" element={<About />} />
-            
-            <Route path="/test" element={<TestPlatform test={mockTest} />} />
+
+            <Route path="/test/:testId" element={<TestPlatform  />} />
+
+            <Route path="/test-results/:testId" element={<TestResults />} />
            
             
             

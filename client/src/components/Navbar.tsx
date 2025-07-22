@@ -3,9 +3,9 @@ import { ModeToggle } from './mode-toggle';
 
 const Navbar = () => {
   return (
-    <div className="w-full px-4 py-4">
-      <nav className="max-w-7xl mx-auto bg-background/95 backdrop-blur-lg border border-border/50 shadow-lg rounded-2xl">
-        <div className="px-6 py-4">
+    <div className="w-full py-2">
+      <nav className=" mx-auto bg-background/95 backdrop-blur-lg border border-border/50 shadow-lg rounded-2xl">
+        <div className="px-6 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="relative">
