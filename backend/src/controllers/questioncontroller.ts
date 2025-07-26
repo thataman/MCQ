@@ -15,10 +15,7 @@ export const getquestion = async (req: Request, res: Response):Promise<void> => 
 
     
 
-  type Query = {
-  type: 'equals' | 'startsWith';
-  value: string;
-};
+   
 
 const queries: Query[] = keywords.map((key: string) =>
   key.length === 1
@@ -46,11 +43,7 @@ if (conditions.length === 0) {
 
 const whereClause = conditions.join(' OR ');
 
-// Validate and parse limit
-const limit = allotedtime
-if (isNaN(limit) || limit <= 0) throw new Error('Invalid limit');
 
-// Final query string with LIMIT as the last placeholder
 const rawQuery = `
   SELECT * FROM "Question"
   WHERE ${whereClause}
@@ -58,10 +51,8 @@ const rawQuery = `
   LIMIT $${values.length + 1}
 `;
 
-// Add limit to values array
-values.push(limit);
+values.push(allotedtime);
 
-// Execute raw query safely
 const questions: any = await client.$queryRawUnsafe(rawQuery, ...values);
 
       
@@ -72,13 +63,7 @@ const questions: any = await client.$queryRawUnsafe(rawQuery, ...values);
         "question": e.question,
         "options": e.options
     }))
-    // const answers = questions.reduce(
-    //     (acc: { [key: number]: string }, { id, correct_option }: { id: number; correct_option: string }) => {
-    //       acc[id] = correct_option;  
-    //       return acc; 
-    //     },
-    //     {} 
-    //   );
+   
       const answersexplanation = questions.reduce(
         (acc: { [key: number]: {correct_option:string,explanation:string} }, question: { id: number ,correct_option :string,explanation: string }) => {
           const { id, correct_option, explanation } = question;
@@ -95,14 +80,7 @@ const questions: any = await client.$queryRawUnsafe(rawQuery, ...values);
 return
 }
 
-interface answermap{
-correct_option:string , 
-explanation : string
-}
 
-interface answerobject{
-  [id:string] : answermap
-}
 
 export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
     const {answer ,testid} = req.body
@@ -115,19 +93,7 @@ export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
      verifiedAnswers = JSON.parse(verifiedAnswersString)
     }
     console.log(verifiedAnswers);
-    
-//     let verifiedAnswers 
-//     console.log(verifiedAnswersString);
-    
-//      if (verifiedAnswersString) {
-//         verifiedAnswers = JSON.parse(verifiedAnswersString || "{}"); 
-//      }
-
-
-
-
-
-
+  
 if(!verifiedAnswers){
  res.json("ansers not found")
  return
@@ -139,6 +105,9 @@ for(const answerval in answer){
     }
 }
 
-     res.status(200).json({count})
+     res.status(200).json({count,
+      data:verifiedAnswers,
+      yours:answer
+     })
      return
 }
