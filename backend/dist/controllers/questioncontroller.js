@@ -1,8 +1,10 @@
 import { prisma as client } from "../utils/primaclient.js";
 import { timer } from "../utils/timer.js";
 import { valkey } from "../utils/rislint.js";
+import generateSuperheroTestTitle from "../utils/testtitle.js";
 export const getquestion = async (req, res) => {
     const { keywords, time, testid } = req.body;
+    console.log(req.body);
     const allotedtime = timer(time);
     if (allotedtime === 0) {
         res.json({ error: "Wrong time allotted" });
@@ -63,11 +65,26 @@ export const getquestion = async (req, res) => {
     }, {});
     const testidtoString = JSON.stringify(testid);
     valkey.set(testidtoString, JSON.stringify(answersexplanation));
+<<<<<<< HEAD
     res.status(200).json(withoutanswer);
+=======
+    const payload = {
+        "testId": testid,
+        "title": generateSuperheroTestTitle(),
+        "timeLimit": limit,
+        "questions": withoutanswer
+    };
+    // console.log("Generated test payload:", payload);
+    res.status(200).json(payload);
+>>>>>>> 8895f8196d07ae905759713a5e57487284cce3a3
     return;
 };
 export const verifyquestion = async (req, res) => {
     const { answer, testid } = req.body;
+<<<<<<< HEAD
+=======
+    console.log(req.body, "verifyquestion called");
+>>>>>>> 8895f8196d07ae905759713a5e57487284cce3a3
     const testidtoString = JSON.stringify(testid);
     let verifiedAnswers;
     const verifiedAnswersString = await valkey.get(testidtoString);
@@ -90,6 +107,11 @@ export const verifyquestion = async (req, res) => {
             count++;
         }
     }
-    res.status(200).json({ count });
+    const payload = {
+        "testId": testid,
+        "correctAnswers": count,
+        "explanations": verifiedAnswers
+    };
+    res.status(200).json(payload);
     return;
 };

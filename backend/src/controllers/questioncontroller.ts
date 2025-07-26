@@ -2,11 +2,14 @@ import { prisma as client, prisma } from "../utils/primaclient.js"
 import { timer } from "../utils/timer.js"
 import { Request, Response } from "express"
 import { valkey } from "../utils/rislint.js"
+import generateSuperheroTestTitle from "../utils/testtitle.js"
 
 
 type Query = { type: 'startsWith' | 'equals'; value: string };
 export const getquestion = async (req: Request, res: Response):Promise<void> => {
     const { keywords, time, testid } = req.body
+    console.log(req.body);
+    
     const allotedtime = timer(time)
     if (allotedtime === 0) {
        res.json({ error: "Wrong time allotted" });
@@ -15,7 +18,10 @@ export const getquestion = async (req: Request, res: Response):Promise<void> => 
 
     
 
-   
+  type Query = {
+  type: 'equals' | 'startsWith';
+  value: string;
+};
 
 const queries: Query[] = keywords.map((key: string) =>
   key.length === 1
@@ -43,7 +49,11 @@ if (conditions.length === 0) {
 
 const whereClause = conditions.join(' OR ');
 
+// Validate and parse limit
+const limit = allotedtime
+if (isNaN(limit) || limit <= 0) throw new Error('Invalid limit');
 
+// Final query string with LIMIT as the last placeholder
 const rawQuery = `
   SELECT * FROM "Question"
   WHERE ${whereClause}
@@ -51,8 +61,10 @@ const rawQuery = `
   LIMIT $${values.length + 1}
 `;
 
-values.push(allotedtime);
+// Add limit to values array
+values.push(limit);
 
+// Execute raw query safely
 const questions: any = await client.$queryRawUnsafe(rawQuery, ...values);
 
       
@@ -63,7 +75,13 @@ const questions: any = await client.$queryRawUnsafe(rawQuery, ...values);
         "question": e.question,
         "options": e.options
     }))
-   
+    // const answers = questions.reduce(
+    //     (acc: { [key: number]: string }, { id, correct_option }: { id: number; correct_option: string }) => {
+    //       acc[id] = correct_option;  
+    //       return acc; 
+    //     },
+    //     {} 
+    //   );
       const answersexplanation = questions.reduce(
         (acc: { [key: number]: {correct_option:string,explanation:string} }, question: { id: number ,correct_option :string,explanation: string }) => {
           const { id, correct_option, explanation } = question;
@@ -76,14 +94,32 @@ const questions: any = await client.$queryRawUnsafe(rawQuery, ...values);
       );
       const testidtoString = JSON.stringify(testid)
       valkey.set(testidtoString, JSON.stringify(answersexplanation));
-   res.status(200).json(withoutanswer)
+      const payload = {
+        "testId": testid,
+        "title": generateSuperheroTestTitle(),
+        "timeLimit": limit,
+        "questions": withoutanswer
+      }
+     // console.log("Generated test payload:", payload);
+      
+   res.status(200).json(payload)
 return
 }
 
+interface answermap{
+correct_option:string , 
+explanation : string
+}
 
+interface answerobject{
+  [id:string] : answermap
+}
 
 export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
     const {answer ,testid} = req.body
+
+    console.log(req.body, "verifyquestion called");
+    
     const testidtoString = JSON.stringify(testid)
     
     
@@ -93,7 +129,19 @@ export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
      verifiedAnswers = JSON.parse(verifiedAnswersString)
     }
     console.log(verifiedAnswers);
-  
+    
+//     let verifiedAnswers 
+//     console.log(verifiedAnswersString);
+    
+//      if (verifiedAnswersString) {
+//         verifiedAnswers = JSON.parse(verifiedAnswersString || "{}"); 
+//      }
+
+
+
+
+
+
 if(!verifiedAnswers){
  res.json("ansers not found")
  return
@@ -105,9 +153,12 @@ for(const answerval in answer){
     }
 }
 
-     res.status(200).json({count,
-      data:verifiedAnswers,
-      yours:answer
-     })
+const payload = {
+    "testId": testid,
+    "correctAnswers": count,
+    "explanations": verifiedAnswers
+}
+
+     res.status(200).json(payload)
      return
 }
