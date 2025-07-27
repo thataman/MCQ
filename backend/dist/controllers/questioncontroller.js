@@ -65,9 +65,6 @@ export const getquestion = async (req, res) => {
     }, {});
     const testidtoString = JSON.stringify(testid);
     valkey.set(testidtoString, JSON.stringify(answersexplanation));
-<<<<<<< HEAD
-    res.status(200).json(withoutanswer);
-=======
     const payload = {
         "testId": testid,
         "title": generateSuperheroTestTitle(),
@@ -76,15 +73,11 @@ export const getquestion = async (req, res) => {
     };
     // console.log("Generated test payload:", payload);
     res.status(200).json(payload);
->>>>>>> 8895f8196d07ae905759713a5e57487284cce3a3
     return;
 };
 export const verifyquestion = async (req, res) => {
     const { answer, testid } = req.body;
-<<<<<<< HEAD
-=======
     console.log(req.body, "verifyquestion called");
->>>>>>> 8895f8196d07ae905759713a5e57487284cce3a3
     const testidtoString = JSON.stringify(testid);
     let verifiedAnswers;
     const verifiedAnswersString = await valkey.get(testidtoString);

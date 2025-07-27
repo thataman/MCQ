@@ -58,7 +58,7 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 mt-6">
         <div className="prose prose-sm max-w-none dark:prose-invert">
           <p className="text-base leading-relaxed">{question.question}</p>
         </div>
@@ -66,26 +66,26 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
         <RadioGroup 
           value={status.selectedOption || ''} 
           onValueChange={onSelectOption}
-          className="space-y-1"
+          className="space-y-3"
         >
           {optionKeys.map((optionKey) => {
         const isSelected = status.selectedOption === optionKey;
         return (
           <div 
             key={optionKey} 
-            className={`space-y-1 transition-all ${
+            className={`space-y-3 transition-all ${
               isSelected ? "border-primary bg-primary/10" : "border-border bg-muted/50"
-            } rounded-md border p-3`}
+            } rounded-md border`}
           >
-            <div className="flex items-start space-x-3">
+            <div className="flex items-center mx-6">
               <RadioGroupItem 
                 value={optionKey} 
                 id={`option-${optionKey}`} 
-                className="mt-1"
+                className=" "
               />
               <Label 
                 htmlFor={`option-${optionKey}`} 
-                className="flex-1 cursor-pointer text-sm leading-relaxed"
+                className="flex-1 cursor-pointer text-sm leading-relaxed p-4"
               >
                 <span className="font-semibold text-primary mr-2">{optionKey}.</span>
                 {question.options[optionKey]}

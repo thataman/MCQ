@@ -135,7 +135,7 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
     window.addEventListener("contextmenu", blockContextMenu); // Block right-click
 
   
-    enterFullscreen(); // Start fullscreen on load
+    enterFullscreen(); 
 
     return () => {
      
@@ -263,7 +263,7 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
     if (res) {
       if (setStateAfterTestSubmit) {
         setStateAfterTestSubmit(res);
-        setLoading(false)
+        
 
 
         // save the state in session storage
@@ -272,6 +272,8 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
           test: test,
           statusMap: progress.statusMap,
         }));
+
+        setLoading(false)
 
         //navigate to the results page
         navigate(`/test-results/${test.testId}`);
@@ -306,7 +308,7 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
 
   return (
    <div className="relative w-full h-screen select-none
- bg-white flex flex-col md:flex-row gap-6 p-3">
+  bg-primary-foreground/90 flex flex-col md:flex-row gap-6 p-3">
 
 
  {!isFullscreen && (
