@@ -159,7 +159,8 @@ export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
       correctAnswers: count,
       explanations: verifiedAnswers
   }
-  
+    console.log(payload.correctAnswers);
+    
        res.status(200).json(payload)
        return
     } catch (error) {
