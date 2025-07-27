@@ -21,6 +21,7 @@ import {
 import {generateTest} from "@/api/Test"
 import {generateTestId} from "@/lib/utils"
 import Navbar from "../Navbar";
+import { toast } from "sonner";
 
 
 interface Subtopic {
@@ -177,6 +178,7 @@ const handleTestGenerate = async () => {
     
   } catch (error) {
     console.error("Error generating test:", error);
+    toast.error("Error generating test, please try again.");
     
   } finally {
     setIsLoading(false);
