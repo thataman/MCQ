@@ -53,7 +53,8 @@ const TestResults= () => {
   
   const [currentQuestionId, setCurrentQuestionId] = useState(test.questions[0]?.id || 0);
   
-  
+  const [fullScreen, setFullScreen] = useState(true);
+
   const totalQuestions = test.questions.length;
  // const attemptedQuestions = Object.values(statusMap).filter(status => status.attempted).length;
   const correctAnswers = Object.values(statusMap).filter(
@@ -63,6 +64,19 @@ const TestResults= () => {
   
   const percentage = Math.round((correctAnswers / totalQuestions) * 100);
   //const attemptedPercentage = Math.round((attemptedQuestions / totalQuestions) * 100);
+
+const handleFullscreen = () => {
+  if(fullScreen){
+      document.exitFullscreen()
+      setFullScreen(false);
+  }else{
+      document.documentElement.requestFullscreen();
+      setFullScreen(true);
+  }
+}
+
+
+
 
   useEffect(() => {
     if (percentage >= 70) {
@@ -118,24 +132,28 @@ const TestResults= () => {
   }; */
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className=" bg-primary-foreground/80 p-4">
       {/* Fixed Score Summary Header */}
     
+
       
-      <div className=" flex flex-col lg:flex-row gap-6 mx-auto">
+      <div className=" flex  gap-2 mx-auto">
         {/* Questions List */}
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-1/4">
           <QuestionsList
             questions={test.questions}
             currentQuestionId={currentQuestionId}
             statusMap={statusMap}
             onSelectQuestion={handleSelectQuestion}
+            correctAnswers={stateAfterTestSubmit?.correctAnswers}
+            isResultsPage = {true}
+            stateAfterTestSubmit={stateAfterTestSubmit}
           />
         </div>
 
         {/* Question Review */}
-        <div className="w-full lg:w-2/3 space-y-6 flex flex-col justify-between">
-          <Card>
+        <div className="w-full lg:w-3/4 space-y-6 flex flex-col justify-between">
+          <Card className='h-full'>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Question {currentQuestionIndex + 1}</span>
@@ -215,12 +233,33 @@ const TestResults= () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
             <Button 
-              variant="secondary" 
+              variant="outline" 
               onClick={() => navigate('/')}
               className="flex items-center gap-6 p-5"
             >
               <Home className="h-4 w-4" />
               Back to Home
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={handleFullscreen}
+              className="flex items-center gap-6 p-5"
+            >
+              {
+                fullScreen ? 
+                <>
+                <XCircle className="h-4 w-4" />
+                <span>Exit Fullscreen</span>
+                 <span className="sr-only">Exit Fullscreen</span>
+                </>
+                 :
+                 <>
+                <CheckCircle className="h-4 w-4" />
+                    <span>Enter Fullscreen</span>
+                 <span className="sr-only">Enter Fullscreen</span>
+                </>
+              }
+              
             </Button>
             <ModeToggle />
             </div>
@@ -228,7 +267,7 @@ const TestResults= () => {
             <div className="flex gap-6">
               <Button
               className='p-5'
-                variant="secondary"
+                variant="outline"
                 onClick={handlePrevious}
                 disabled={!canGoPrevious}
               >

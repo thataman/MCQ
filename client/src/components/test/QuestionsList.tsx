@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, Circle, HelpCircle, TrendingUp } from 'lucide-react';
+import { CheckCircle, Circle, HelpCircle, TrendingUp,  XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,18 +24,30 @@ interface QuestionStatus {
   selectedOption: string | null;
 }
 
+interface stateAfterTestSubmit {
+  testId: string;
+  correctAnswers: number;
+  explanations: { [key: string]: { correct_option: string; explanation: string } }; 
+}
+
 interface QuestionsListProps {
   questions: Question[];
   currentQuestionId: number;
   statusMap: Record<number, QuestionStatus>;
   onSelectQuestion: (questionId: number) => void;
+  correctAnswers?: number | undefined;
+  isResultsPage?: boolean;
+  stateAfterTestSubmit?: stateAfterTestSubmit
 }
 
 const QuestionsList: React.FC<QuestionsListProps> = ({
   questions,
   currentQuestionId,
   statusMap,
-  onSelectQuestion
+  onSelectQuestion,
+  correctAnswers = 0  ,
+  isResultsPage = false,
+  stateAfterTestSubmit
 }) => {
   const getStatusCounts = () => {
     const totalQuestions = questions.length;
@@ -44,13 +56,41 @@ const QuestionsList: React.FC<QuestionsListProps> = ({
     const notAttempted = questions.length - completed - attempted;
     const overallProgress = Math.round(((completed + attempted) / totalQuestions) * 100) || 0;
     
-    return { completed, attempted, notAttempted, overallProgress };
+    return { completed, attempted, notAttempted, overallProgress,totalQuestions };
   };
 
-  const { completed, attempted, notAttempted, overallProgress } = getStatusCounts();
+  const { completed,  notAttempted, overallProgress } = getStatusCounts();
 
   return (
-    <Card className="h-full flex flex-col max-h-[calc(100vh-2rem)]">
+    <Card className=" flex flex-col h-[calc(100vh-2rem)]">
+     {
+     isResultsPage ?
+     <CardHeader className="pb-4 flex-shrink-0">
+       <CardTitle className="text-lg mb-2">Result Summary</CardTitle>
+       
+        
+        <div className="grid grid-cols-2 gap-2">
+          <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 p-1.5">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            {correctAnswers} Correct
+          </Badge>
+          <Badge variant={'destructive'}>
+            <XCircle  className="h-3 w-3 mr-1" />
+            {(completed-correctAnswers)} Incorrect
+          </Badge>
+          <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 p-1.5">
+            <HelpCircle className="h-3 w-3 mr-1" />
+            {completed} Attempted
+          </Badge>
+          <Badge variant="secondary" className="bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 p-1.5">
+            <Circle className="h-3 w-3 mr-1" />
+            {notAttempted} Not Attempted
+          </Badge>
+        </div>
+
+        
+      </CardHeader>:
+
       <CardHeader className="pb-4 flex-shrink-0">
         <CardTitle className="text-base flex items-center gap-2">
           <TrendingUp className="h-4 w-4" />
@@ -65,13 +105,10 @@ const QuestionsList: React.FC<QuestionsListProps> = ({
         </div>
         <CardTitle className="text-lg">Questions</CardTitle>
         <div className="flex flex-wrap gap-2">
-          <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-            <CheckCircle className="h-3 w-3 mr-1" />
-            {completed} Completed
-          </Badge>
+         
           <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
             <HelpCircle className="h-3 w-3 mr-1" />
-            {attempted} Attempted
+            {completed} Attempted
           </Badge>
           <Badge variant="secondary" className="bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
             <Circle className="h-3 w-3 mr-1" />
@@ -79,6 +116,7 @@ const QuestionsList: React.FC<QuestionsListProps> = ({
           </Badge>
         </div>
       </CardHeader>
+}
       
       <CardContent className="flex-1 min-h-0 p-0">
         <ScrollArea className="h-full">
@@ -91,19 +129,25 @@ const QuestionsList: React.FC<QuestionsListProps> = ({
                   completed: false, 
                   selectedOption: null 
                 };
+
                 
                 let statusIcon;
                 let statusColor = '';
                 
-                if (status.completed) {
+                if (status.selectedOption === stateAfterTestSubmit?.explanations[question.id]?.correct_option) {
                   statusIcon = <CheckCircle className="h-4 w-4" />;
-                  statusColor = 'bg-green-100 text-green-700 border-green-200 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-800 dark:hover:bg-green-800';
-                } else if (status.attempted) {
+                  statusColor = 'bg-green-400 text-green-700 border-green-200 hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-800 dark:hover:bg-green-800';
+                } else if (status.completed && status.selectedOption !== stateAfterTestSubmit?.explanations[question.id]?.correct_option && isResultsPage) {
+                  statusIcon = <XCircle className="h-4 w-4" />;
+                  statusColor = 'bg-red-400 text-red-700 border-red-200 hover:bg-red-200 dark:bg-red-900 dark:text-red-300 dark:border-red-800 dark:hover:bg-red-800';
+                }
+                else if (status.completed && status.selectedOption !== stateAfterTestSubmit?.explanations[question.id]?.correct_option) {
                   statusIcon = <HelpCircle className="h-4 w-4" />;
-                  statusColor = 'bg-yellow-100 text-yellow-700 border-yellow-200 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300 dark:border-yellow-800 dark:hover:bg-yellow-800';
-                } else {
+                  statusColor = 'bg-yellow-400 text-yellow-700 border-yellow-200 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300 dark:border-yellow-800 dark:hover:bg-yellow-800';
+                }
+                else {
                   statusIcon = <Circle className="h-4 w-4" />;
-                  statusColor = 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700';
+                  statusColor = 'bg-gray-200 text-gray-700 border-gray-200 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700';
                 }
 
                 const isCurrentQuestion = currentQuestionId === question.id;

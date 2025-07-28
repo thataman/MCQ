@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 //import { useNavigate } from 'react-router-dom';
 import QuestionsList from './QuestionsList';
@@ -10,6 +11,8 @@ import { useTest } from '@/store/test.store';
 import StudentLoader from '../Loader';
 import { verifyAnswers } from '@/api/Test';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { TestAlert } from './warningmodal';
 
 interface Question {
   id: number;
@@ -135,7 +138,7 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
     window.addEventListener("contextmenu", blockContextMenu); // Block right-click
 
   
-    enterFullscreen(); // Start fullscreen on load
+    enterFullscreen(); 
 
     return () => {
      
@@ -247,7 +250,7 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
     }, test.testId);
   };
 
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
     /*  const totalQuestions = test.questions.length;
      const attempted = Object.values(progress.statusMap).filter(status => status.attempted).length;
      
@@ -258,32 +261,43 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
        if (!confirmSubmit) return;
      } */
 
-    setLoading(true)
-    const res = await verifyAnswers(userSelection as userSelection)
-    if (res) {
-      if (setStateAfterTestSubmit) {
-        setStateAfterTestSubmit(res);
-        setLoading(false)
+    setLoading(true);
+    
+    try {
+        const res = await verifyAnswers(userSelection as userSelection);
+        
+        if (res) {
+            if (setStateAfterTestSubmit) {
+                setStateAfterTestSubmit(res);
+                
+                sessionStorage.setItem('testState', JSON.stringify({
+                    test: test,
+                    statusMap: progress.statusMap,
+                }));
 
-
-        // save the state in session storage
-
-        sessionStorage.setItem('testState', JSON.stringify({
-          test: test,
-          statusMap: progress.statusMap,
-        }));
-
-        //navigate to the results page
-        navigate(`/test-results/${test.testId}`);
-
-      }
+                toast.success("Test submitted successfully!");
+                
+                // Set loading to false before navigation
+                setLoading(false);
+                navigate(`/test-results/${test.testId}`);
+            }
+        } else {
+            toast.error("Failed to submit test. Please try again.");
+            setLoading(false);
+            navigate(`/generate`);
+        }
+        
+    } catch (error: any) {
+        console.error("Error submitting test:", error);
+        
+        toast.error("Failed to submit test. Redirecting to generate page...");
+  
+        setTimeout(() => {
+            setLoading(false);
+            navigate(`/generate`);
+        }, 2000);
     }
-
-
-
-
-  };
-
+};
   const handleTimeEnd = () => {
     alert('Time is up! Your test will be submitted automatically.');
     handleSubmit();
@@ -306,53 +320,18 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
 
   return (
    <div className="relative w-full h-screen select-none
- bg-white flex flex-col md:flex-row gap-6 p-3">
-
-
- {!isFullscreen && (
-        <div className="absolute inset-0 bg-black bg-opacity-80 backdrop-blur-sm flex flex-col items-center justify-center z-50">
-          <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-      <div
-        className="bg-white bg-center bg-no-repeat bg-cover p-8 rounded-lg shadow-lg text-black text-center w-full max-w-md mx-auto"
-        style={{
-          backgroundImage:  `url(https://ucarecdn.com/b57f0155-952b-4f96-be46-01ce99abd2c2/Screenshot20250726145256.png)`,
-        }}
-      >
-<h1
-  className="text-4xl font-extrabold text-black text-center"
-  style={{
-    textShadow: `
-      -4px -4px 0 white,
-      4px -4px 0 white,
-      -4px 4px 0 white,
-      4px 4px 0 white
-    `,
-  }}
->
-  Fullscreen Required
-</h1>
+  bg-primary-foreground/90 flex flex-col md:flex-row gap-2 p-3">
 
 
 
-        <p className="mb-6"
-        style={{
-    textShadow: `
-      -3px -3px 0 white,
-      3px -3px 0 white,
-      -3px 3px 0 white,
-      3px 3px 0 white
-    `,
-  }}>Click below to re-enter fullscreen mode.</p>
-        <button 
-         onClick={handleManualEnter}
-        className="bg-white text-black border border-black px-6 py-3 rounded-md font-semibold shadow hover:bg-gray-100 transition">
-          Re-enter Fullscreen
-        </button>
-      </div>
-    </div>
 
-        </div>
-      )}
+      {
+        <TestAlert 
+          open={!isFullscreen} 
+          onEnterFullscreen={handleManualEnter} 
+          onSubmitTest={handleSubmit} 
+        />
+      }
 
       <div className="w-full md:w-1/3 lg:w-1/4 h-full flex flex-col space-y-4">
         <QuestionsList

@@ -65,53 +65,54 @@ export const getquestion = async (req, res) => {
     }, {});
     const testidtoString = JSON.stringify(testid);
     valkey.set(testidtoString, JSON.stringify(answersexplanation));
-<<<<<<< HEAD
-    res.status(200).json(withoutanswer);
-=======
     const payload = {
-        "testId": testid,
-        "title": generateSuperheroTestTitle(),
-        "timeLimit": limit,
-        "questions": withoutanswer
+        testId: testid,
+        title: generateSuperheroTestTitle(),
+        timeLimit: limit,
+        questions: withoutanswer
     };
     // console.log("Generated test payload:", payload);
     res.status(200).json(payload);
->>>>>>> 8895f8196d07ae905759713a5e57487284cce3a3
     return;
 };
 export const verifyquestion = async (req, res) => {
     const { answer, testid } = req.body;
-<<<<<<< HEAD
-=======
-    console.log(req.body, "verifyquestion called");
->>>>>>> 8895f8196d07ae905759713a5e57487284cce3a3
+    // console.log(req.body, "verifyquestion called");
     const testidtoString = JSON.stringify(testid);
-    let verifiedAnswers;
-    const verifiedAnswersString = await valkey.get(testidtoString);
-    if (verifiedAnswersString) {
-        verifiedAnswers = JSON.parse(verifiedAnswersString);
-    }
-    console.log(verifiedAnswers);
-    //     let verifiedAnswers 
-    //     console.log(verifiedAnswersString);
-    //      if (verifiedAnswersString) {
-    //         verifiedAnswers = JSON.parse(verifiedAnswersString || "{}"); 
-    //      }
-    if (!verifiedAnswers) {
-        res.json("ansers not found");
+    try {
+        let verifiedAnswers;
+        const verifiedAnswersString = await valkey.get(testidtoString);
+        if (verifiedAnswersString) {
+            verifiedAnswers = JSON.parse(verifiedAnswersString);
+        }
+        //console.log(verifiedAnswers);
+        //     let verifiedAnswers 
+        //     console.log(verifiedAnswersString);
+        //      if (verifiedAnswersString) {
+        //         verifiedAnswers = JSON.parse(verifiedAnswersString || "{}"); 
+        //      }
+        if (!verifiedAnswers) {
+            res.json("ansers not found");
+            return;
+        }
+        let count = 0;
+        for (const answerval in answer) {
+            if (answer[answerval] === verifiedAnswers[answerval]?.correct_option) {
+                count++;
+            }
+        }
+        const payload = {
+            testId: testid,
+            correctAnswers: count,
+            explanations: verifiedAnswers
+        };
+        console.log(payload.correctAnswers);
+        res.status(200).json(payload);
         return;
     }
-    let count = 0;
-    for (const answerval in answer) {
-        if (answer[answerval] === verifiedAnswers[answerval]?.correct_option) {
-            count++;
-        }
+    catch (error) {
+        console.error("Error in verifyquestion:", error);
+        res.status(500).json({ error: "Internal server error" });
+        return;
     }
-    const payload = {
-        "testId": testid,
-        "correctAnswers": count,
-        "explanations": verifiedAnswers
-    };
-    res.status(200).json(payload);
-    return;
 };

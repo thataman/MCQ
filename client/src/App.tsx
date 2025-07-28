@@ -5,18 +5,17 @@ import LandingPage from './components/LandingPage';
 import TestPlatform from './components/test/TestPlatform';
 import TestGenerator from './components/test/TestGenerator';
 import About from './components/About';
-
+import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/theme-provider';
 import TestResults from './components/test/TestResults';
 
 function App() {
   return (
     <ThemeProvider>
+      <Toaster richColors position="top-right" />
       <Router>
-        
-          <Routes>
-           
-            <Route path="/" element={<LandingPage />} />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
            
              <Route path="/generate" element={<TestGenerator />} />
              <Route path="/about" element={<About />} />
