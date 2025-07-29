@@ -1,4 +1,4 @@
-import { prisma as client, prisma } from "../utils/primaclient.js"
+import { prisma as client} from "../utils/primaclient.js"
 import { timer } from "../utils/timer.js"
 import { Request, Response } from "express"
 import { valkey } from "../utils/rislint.js"
@@ -8,11 +8,11 @@ import generateSuperheroTestTitle from "../utils/testtitle.js"
 type Query = { type: 'startsWith' | 'equals'; value: string };
 export const getquestion = async (req: Request, res: Response):Promise<void> => {
     const { keywords, time, testid } = req.body
-    console.log(req.body);
+    
     
     const allotedtime = timer(time)
     if (allotedtime === 0) {
-       res.json({ error: "Wrong time allotted" });
+       res.status(400).json({ error: "Wrong time allotted" });
        return
     }
 
@@ -116,7 +116,9 @@ interface answerobject{
 }
 
 export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
-    const {answer ,testid} = req.body
+    const {answers ,testid} = req.body || {}
+    
+
 
    // console.log(req.body, "verifyquestion called");
     
@@ -144,14 +146,31 @@ export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
   
   
   if(!verifiedAnswers){
-   res.json("ansers not found")
+   res.status(400).json("ansers not found")
    return
   }
+  
+  if(!answers){
+      const payload = {
+      testId: testid,
+      correctAnswers: 0,
+      explanations: verifiedAnswers
+  }
+    console.log(payload.correctAnswers);
+    
+       res.status(200).json(payload)
+       return
+    }
+  // console.log(verifiedAnswers);
+  
+  
   let count = 0;
-  for(const answerval in answer){
-      if(answer[answerval] === verifiedAnswers[answerval]?.correct_option ){
-          count++
-      }
+  if (answers) {
+    for(const answerval in answers){
+        if(answers[answerval] == verifiedAnswers[answerval]?.correct_option ){
+            count++
+        }
+    }
   }
   
   const payload = {

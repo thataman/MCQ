@@ -4,10 +4,9 @@ import { valkey } from "../utils/rislint.js";
 import generateSuperheroTestTitle from "../utils/testtitle.js";
 export const getquestion = async (req, res) => {
     const { keywords, time, testid } = req.body;
-    console.log(req.body);
     const allotedtime = timer(time);
     if (allotedtime === 0) {
-        res.json({ error: "Wrong time allotted" });
+        res.status(400).json({ error: "Wrong time allotted" });
         return;
     }
     const queries = keywords.map((key) => key.length === 1
@@ -76,7 +75,7 @@ export const getquestion = async (req, res) => {
     return;
 };
 export const verifyquestion = async (req, res) => {
-    const { answer, testid } = req.body;
+    const { answers, testid } = req.body || {};
     // console.log(req.body, "verifyquestion called");
     const testidtoString = JSON.stringify(testid);
     try {
@@ -92,13 +91,26 @@ export const verifyquestion = async (req, res) => {
         //         verifiedAnswers = JSON.parse(verifiedAnswersString || "{}"); 
         //      }
         if (!verifiedAnswers) {
-            res.json("ansers not found");
+            res.status(400).json("ansers not found");
             return;
         }
+        if (!answers) {
+            const payload = {
+                testId: testid,
+                correctAnswers: 0,
+                explanations: verifiedAnswers
+            };
+            console.log(payload.correctAnswers);
+            res.status(200).json(payload);
+            return;
+        }
+        // console.log(verifiedAnswers);
         let count = 0;
-        for (const answerval in answer) {
-            if (answer[answerval] === verifiedAnswers[answerval]?.correct_option) {
-                count++;
+        if (answers) {
+            for (const answerval in answers) {
+                if (answers[answerval] == verifiedAnswers[answerval]?.correct_option) {
+                    count++;
+                }
             }
         }
         const payload = {
