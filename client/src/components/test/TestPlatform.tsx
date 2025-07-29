@@ -146,6 +146,11 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       window.removeEventListener("keydown", blockKeys);
       window.removeEventListener("contextmenu", blockContextMenu);
+
+
+      if (document.fullscreenElement && document.exitFullscreen) {
+    document.exitFullscreen().catch(console.error);
+  }
     };
   }, []);
 
@@ -279,7 +284,8 @@ const handleSubmit = async () => {
                 
                 // Set loading to false before navigation
                 setLoading(false);
-                navigate(`/test-results/${test.testId}`);
+                navigate(`/test-results/${test.testId}`,{ replace: true });
+               
             }
         } else {
             toast.error("Failed to submit test. Please try again.");
@@ -303,11 +309,11 @@ const handleSubmit = async () => {
     handleSubmit();
   };
 
-  const handleManualEnter = () => {
-    if (document.body.requestFullscreen) {
-      document.body.requestFullscreen().catch(console.error);
-    }
-  };
+  // const handleManualEnter = () => {
+  //   if (document.body.requestFullscreen) {
+  //     document.body.requestFullscreen().catch(console.error);
+  //   }
+  // };
 
   const canGoPrevious = currentQuestionIndex > 0;
   const canGoNext = currentQuestionIndex < test.questions.length - 1;
@@ -324,14 +330,14 @@ const handleSubmit = async () => {
 
 
 
-
+{/* 
       {
         <TestAlert 
           open={!isFullscreen} 
           onEnterFullscreen={handleManualEnter} 
           onSubmitTest={handleSubmit} 
         />
-      }
+      } */}
 
       <div className="w-full md:w-1/3 lg:w-1/4 h-full flex flex-col space-y-4">
         <QuestionsList

@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import  { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { BookOpen } from "lucide-react";
 import {
@@ -133,12 +133,23 @@ keyword : ["ab","bd","de"]
 
 
 */
+
+
 const [isLoading, setIsLoading] = useState(false);
   const [keywords, setSelectedKeywords] = useState<string[]>([]);
 
   const [timeLimit, setTimeLimit] = useState("15");
 
   const {setKeywords,setTime,setQuestion} = useTest()
+
+
+  useEffect(() => {
+    // Replace current entry with /home (or any custom previous page)
+    window.history.replaceState({}, '', '/');
+
+    // Push the actual current page to history
+    window.history.pushState({}, '', '/generate');
+  }, []);
 
   const handleSubtopicToggle = (
     topicKeyword: string,

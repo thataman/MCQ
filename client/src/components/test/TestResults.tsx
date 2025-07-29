@@ -65,15 +65,15 @@ const TestResults= () => {
   const percentage = Math.round((correctAnswers / totalQuestions) * 100);
   //const attemptedPercentage = Math.round((attemptedQuestions / totalQuestions) * 100);
 
-const handleFullscreen = () => {
-  if(fullScreen){
-      document.exitFullscreen()
-      setFullScreen(false);
-  }else{
-      document.documentElement.requestFullscreen();
-      setFullScreen(true);
-  }
-}
+// const handleFullscreen = () => {
+//   if(fullScreen){
+//       document.exitFullscreen()
+//       setFullScreen(false);
+//   }else{
+//       document.documentElement.requestFullscreen();
+//       setFullScreen(true);
+//   }
+// }
 
 
 
@@ -240,7 +240,7 @@ const handleFullscreen = () => {
               <Home className="h-4 w-4" />
               Back to Home
             </Button>
-            <Button 
+            {/* <Button 
               variant="outline" 
               onClick={handleFullscreen}
               className="flex items-center gap-6 p-5"
@@ -260,7 +260,7 @@ const handleFullscreen = () => {
                 </>
               }
               
-            </Button>
+            </Button> */}
             <ModeToggle />
             </div>
             
