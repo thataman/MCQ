@@ -5,7 +5,6 @@ import QuestionsList from './QuestionsList';
 import QuestionDisplay from './QuestionDisplay';
 import TestControls from './TestControls';
 import Timer from './Timer';
-import { Button } from '../ui/button';
 import { ModeToggle } from '../mode-toggle';
 import { useTest } from '@/store/test.store';
 import StudentLoader from '../Loader';
@@ -79,7 +78,7 @@ const TestPlatform = () => {
   });
 
 
-  const [isPaused, setIsPaused] = useState(false);
+ 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -180,9 +179,7 @@ if (e.key !== "Escape" && !document.fullscreenElement) {
     return <StudentLoader loadingText='Loading test...' isVisible={!test} />;
   }
 
-  if (loading) {
-    return <StudentLoader loadingText='Submitting test...' isVisible={loading} />;
-  }
+
 
   //console.log(progress, "progress in TestPlatform");
 
@@ -266,6 +263,11 @@ const handleSubmit = async () => {
        if (!confirmSubmit) return;
      } */
 
+       if(!userSelection || Object.keys(userSelection.answers).length === 0) {
+      toast.error("Please select answers for the questions before submitting.");
+      return;
+    }
+
     setLoading(true);
     
     try {
@@ -328,7 +330,10 @@ const handleSubmit = async () => {
    <div className="relative w-full h-screen select-none
   bg-primary-foreground/90 flex flex-col md:flex-row gap-2 p-3">
 
-
+{
+     loading &&
+     <StudentLoader loadingText='Submitting test...' isVisible={loading} />
+  }
 
 {/* 
       {
@@ -362,15 +367,9 @@ const handleSubmit = async () => {
             <Timer
               timeRemaining={progress.timeRemaining}
               onTimeEnd={handleTimeEnd}
-              isPaused={isPaused}
+             
             />
-            <Button
-
-              className=""
-              onClick={() => setIsPaused(!isPaused)}
-            >
-              {isPaused ? 'Resume' : 'Pause'}
-            </Button>
+           
             <ModeToggle />
           </div>
         </div>

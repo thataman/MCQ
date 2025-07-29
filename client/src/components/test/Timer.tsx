@@ -4,10 +4,10 @@ import { Clock } from 'lucide-react';
 interface TimerProps {
   timeRemaining: number; // in seconds
   onTimeEnd: () => void;
-  isPaused: boolean;
+  
 }
 
-const Timer: React.FC<TimerProps> = ({ timeRemaining, onTimeEnd, isPaused }) => {
+const Timer: React.FC<TimerProps> = ({ timeRemaining, onTimeEnd }) => {
   const [seconds, setSeconds] = useState(timeRemaining);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const Timer: React.FC<TimerProps> = ({ timeRemaining, onTimeEnd, isPaused }) => 
       return;
     }
 
-    if (isPaused) return;
+    
 
     const interval = setInterval(() => {
       setSeconds((prevSeconds) => {
@@ -34,7 +34,7 @@ const Timer: React.FC<TimerProps> = ({ timeRemaining, onTimeEnd, isPaused }) => 
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [seconds, onTimeEnd, isPaused]);
+  }, [seconds, onTimeEnd]);
 
   // Format time as HH:MM:SS
   const formatTime = (totalSeconds: number) => {

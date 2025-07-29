@@ -119,17 +119,33 @@ export const verifyquestion = async(req:Request,res:Response):Promise<void>=>{
     const {answers ,testid} = req.body || {}
     
 
+        if (!testid) {
+        res.status(400).json({error: "Test ID is required"});
+        return;
+    }
 
-   // console.log(req.body, "verifyquestion called");
+    console.log(req.body, "verifyquestion called");
     
     const testidtoString = JSON.stringify(testid)
     try {
       
       
-      let verifiedAnswers
-      const verifiedAnswersString = await valkey.get(testidtoString)
-      if (verifiedAnswersString) {
-       verifiedAnswers = JSON.parse(verifiedAnswersString)
+      let verifiedAnswers;
+      try {
+          const verifiedAnswersString = await Promise.race([
+              valkey.get(testidtoString),
+              new Promise((_, reject) => 
+                  setTimeout(() => reject(new Error('Redis timeout')), 10000)
+              )
+          ]) as string | null;
+          
+          if (verifiedAnswersString) {
+              verifiedAnswers = JSON.parse(verifiedAnswersString)
+          }
+      } catch (redisError) {
+          console.error("Redis operation failed:", redisError);
+          res.status(503).json({error: "Database temporarily unavailable"});
+          return;
       }
       //console.log(verifiedAnswers);
       

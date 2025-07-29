@@ -74,10 +74,11 @@ const QuestionsList: React.FC<QuestionsListProps> = ({
             <CheckCircle className="h-3 w-3 mr-1" />
             {correctAnswers} Correct
           </Badge>
-          <Badge variant={'destructive'}>
-            <XCircle  className="h-3 w-3 mr-1" />
-            {(completed-correctAnswers)} Incorrect
-          </Badge>
+            <Badge variant={'destructive'}>
+              <XCircle className="h-3 w-3 mr-1" />
+              {(completed - correctAnswers) > 0 ? (completed - correctAnswers) : 0} Incorrect
+            </Badge>
+
           <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 p-1.5">
             <HelpCircle className="h-3 w-3 mr-1" />
             {completed} Attempted
