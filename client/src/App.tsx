@@ -1,6 +1,6 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
+import FunctionalErrorBoundary from './components/Errorboundry';
 import LandingPage from './components/LandingPage';
 import TestPlatform from './components/test/TestPlatform';
 import TestGenerator from './components/test/TestGenerator';
@@ -11,7 +11,10 @@ import TestResults from './components/test/TestResults';
 
 function App() {
   return (
+    <FunctionalErrorBoundary>
+      <>
     <ThemeProvider>
+      
       <Toaster richColors position="top-right" />
       <Router>
         <Routes>
@@ -29,7 +32,10 @@ function App() {
           </Routes>
         
       </Router>
+     
     </ThemeProvider>
+    </>
+     </FunctionalErrorBoundary>
   );
 }
 
