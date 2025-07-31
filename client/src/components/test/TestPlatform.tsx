@@ -263,10 +263,7 @@ const handleSubmit = async () => {
        if (!confirmSubmit) return;
      } */
 
-       if(!userSelection || Object.keys(userSelection.answers).length === 0) {
-      toast.error("Please select answers for the questions before submitting.");
-      return;
-    }
+     
 
     setLoading(true);
     
@@ -307,7 +304,7 @@ const handleSubmit = async () => {
     }
 };
   const handleTimeEnd = () => {
-    alert('Time is up! Your test will be submitted automatically.');
+    toast.warning('Time is up! Your test will be submitted automatically.');
     handleSubmit();
   };
 

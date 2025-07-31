@@ -1,3 +1,49 @@
 node_modules
 # Keep environment variables out of version control
 .env
+dist
+# Ignore build output
+build
+# Ignore logs
+logs
+*.log
+# Ignore coverage reports
+coverage
+# Ignore temporary files
+tmp
+temp
+# Ignore IDE specific files
+.vscode
+.idea
+# Ignore OS generated files
+./dist
+.DS_Store
+Thumbs.db
+# Ignore package lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+# Ignore dependency directories
+node_modules/
+# Ignore test files
+__tests__
+# Ignore configuration files
+config/
+# Ignore cache files
+.cache
+# Ignore specific files
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+# Ignore build artifacts
+*.tgz
+*.zip
+# Ignore coverage reports
+coverage/
+# Ignore specific directories
+public/
+src/__tests__
+src/__mocks__
+src/__fixtures__
+    

@@ -63,7 +63,10 @@ export const getquestion = async (req, res) => {
         return acc;
     }, {});
     const testidtoString = JSON.stringify(testid);
-    valkey.set(testidtoString, JSON.stringify(answersexplanation));
+    console.log("before setex");
+    const ttlSeconds = Math.floor((allotedtime + 5) * 60);
+    await valkey.setex(testidtoString, ttlSeconds, JSON.stringify(answersexplanation));
+    console.log("after setex");
     const payload = {
         testId: testid,
         title: generateSuperheroTestTitle(),
