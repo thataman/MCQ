@@ -1,7 +1,7 @@
 import { generatePayload } from "@/types";
 import axios from "axios";
 
-const API_BASE_URL =  "http://localhost:3000";
+const API_BASE_URL =  "https://mcqbackend-22in.onrender.com";
 
 
 export const generateTest = async (payload: generatePayload) => {
