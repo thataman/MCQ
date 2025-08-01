@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Play, Star, Users } from "lucide-react"
 
+import { Link } from 'react-router-dom';
+
 export default function HeroSection() {
   return (
     <section className="relative bg-gradient-to-br from-background to-muted/50 pt-8 pb-20 overflow-hidden">
@@ -33,12 +35,15 @@ export default function HeroSection() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-5">
+              <Link to='generate'>
               <Button
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-xl shadow-xl hover:shadow-xl transition-all duration-200"
               >
                 Start Testing Free
               </Button>
+                
+              </Link>
               <Button
                 size="lg"
                 variant="outline"
