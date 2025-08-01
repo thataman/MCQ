@@ -1,8 +1,15 @@
-import Dotenv from "dotenv";
+import { config } from "dotenv";
 import { Redis } from "ioredis";
-Dotenv.config();
-const serviceUrl = process.env.serviceUri;
-if (!serviceUrl) {
-    throw new Error("not got rwntials");
+config();
+let redisInstance = null;
+function getRedisClient() {
+    const serviceUrl = process.env.serviceUri;
+    if (!serviceUrl) {
+        throw new Error("Missing Redis connection URI in environment variables.");
+    }
+    if (!redisInstance) {
+        redisInstance = new Redis(serviceUrl);
+    }
+    return redisInstance;
 }
-export const valkey = new Redis(serviceUrl);
+export const valkey = getRedisClient();

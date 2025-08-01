@@ -7,7 +7,9 @@ Dotenv.config()
 let redisInstance: Redis | null = null;
 
 function getRedisClient(): Redis {
+
     const serviceUrl = process.env.serviceUri
+
 
     if (!serviceUrl) {
         throw new Error("Missing Redis connection URI in environment variables.");

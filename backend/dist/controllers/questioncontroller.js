@@ -63,7 +63,10 @@ export const getquestion = async (req, res) => {
         return acc;
     }, {});
     const testidtoString = JSON.stringify(testid);
-    valkey.set(testidtoString, JSON.stringify(answersexplanation));
+    console.log("before setex");
+    const ttlSeconds = Math.floor((allotedtime + 5) * 60);
+    await valkey.setex(testidtoString, ttlSeconds, JSON.stringify(answersexplanation));
+    console.log("after setex");
     const payload = {
         testId: testid,
         title: generateSuperheroTestTitle(),
@@ -76,13 +79,27 @@ export const getquestion = async (req, res) => {
 };
 export const verifyquestion = async (req, res) => {
     const { answers, testid } = req.body || {};
-    // console.log(req.body, "verifyquestion called");
+    if (!testid) {
+        res.status(400).json({ error: "Test ID is required" });
+        return;
+    }
+    console.log(req.body, "verifyquestion called");
     const testidtoString = JSON.stringify(testid);
     try {
         let verifiedAnswers;
-        const verifiedAnswersString = await valkey.get(testidtoString);
-        if (verifiedAnswersString) {
-            verifiedAnswers = JSON.parse(verifiedAnswersString);
+        try {
+            const verifiedAnswersString = await Promise.race([
+                valkey.get(testidtoString),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Redis timeout')), 10000))
+            ]);
+            if (verifiedAnswersString) {
+                verifiedAnswers = JSON.parse(verifiedAnswersString);
+            }
+        }
+        catch (redisError) {
+            console.error("Redis operation failed:", redisError);
+            res.status(503).json({ error: "Database temporarily unavailable" });
+            return;
         }
         //console.log(verifiedAnswers);
         //     let verifiedAnswers 

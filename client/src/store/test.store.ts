@@ -80,7 +80,7 @@ export const useTest = create<Test>((set) => ({
   setQuestion: (questions) => set(() => ({ question: questions })),
 
 
-  userSelection: undefined,
+  userSelection: { testid: "", answers: {} } as userSelection,
   setUserSelectedAnswer: (answer,testid) => set((state) => ({ userSelection: { 
     testid: testid,
     answers: { ...state.userSelection?.answers, ...answer }

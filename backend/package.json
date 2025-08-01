@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-  "build": "tsc",
-  "dev": "pnpm run build && node dist/index.js"
-},
+    "build": "tsc",
+    "dev": "pnpm run build && node dist/index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
