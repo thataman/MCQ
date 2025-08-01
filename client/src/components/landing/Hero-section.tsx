@@ -3,7 +3,7 @@ import { Play, Star, Users } from "lucide-react"
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-br from-background to-muted/50 py-20 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-background to-muted/50 pt-8 pb-20 overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute top-20 left-10 w-4 h-4 bg-primary rounded-full opacity-60 animate-pulse"></div>
       <div className="absolute top-40 right-20 w-6 h-6 bg-primary/70 rounded-full opacity-40 animate-pulse"></div>
@@ -12,63 +12,63 @@ export default function HeroSection() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
+          <div className="space-y-8 ">
             <div className="inline-block">
-              <span className="bg-secondary text-secondary-foreground px-4 py-2 rounded-full text-sm font-medium border border-border">
+              <span className="bg-secondary text-secondary-foreground px-4 pb-1 pt-1  rounded-full text-sm font-medium border border-border">
                 Welcome To TestMaster
               </span>
             </div>
 
             <div className="space-y-6">
-              <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+              <h1 className="text-5xl lg:text-7xl font-bold text-foreground leading-tight">
                 Master Your Skills
                 <br />
                 <span className="text-primary">Ace Every Test</span>
               </h1>
 
-              <p className="text-xl text-muted-foreground leading-relaxed max-w-lg">
+              <p className="text-2xl text-muted-foreground leading-relaxed max-w-lg">
                 Practice with thousands of topic-wise MCQs in a time-bound environment. Boost your knowledge and exam
                 performance with our comprehensive test platform.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-5">
               <Button
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-xl shadow-xl hover:shadow-xl transition-all duration-200"
               >
                 Start Testing Free
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-border hover:bg-accent hover:text-accent-foreground px-8 py-4 text-lg transition-all duration-200"
+                className="border-border hover:bg-accent hover:text-accent-foreground px-10 py-6 text-xl  transition-all duration-200"
               >
                 <Play className="mr-2 h-5 w-5" />
                 Watch Demo
               </Button>
             </div>
 
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2">
-                <div className="flex -space-x-2">
-                  <div className="w-10 h-10 bg-primary/20 rounded-full border-2 border-background"></div>
-                  <div className="w-10 h-10 bg-secondary/80 rounded-full border-2 border-background"></div>
-                  <div className="w-10 h-10 bg-accent rounded-full border-2 border-background"></div>
-                  <div className="w-10 h-10 bg-muted rounded-full border-2 border-background flex items-center justify-center text-foreground font-bold">
+            <div className="flex items-center space-x-8">
+              <div className="flex items-center space-x-4">
+                <div className="flex -space-x-3">
+                  <div className="w-12 h-12 bg-primary/20 rounded-full border-2 border-background"></div>
+                  <div className="w-12 h-12 bg-secondary/80 rounded-full border-2 border-background"></div>
+                  <div className="w-12 h-12 bg-accent rounded-full border-2 border-background"></div>
+                  <div className="w-12 h-12 bg-muted rounded-full border-2 border-background flex items-center justify-center text-foreground font-bold text-lg">
                     +
                   </div>
                 </div>
-                <div className="ml-3">
-                  <div className="flex items-center space-x-1">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-semibold text-foreground">50k+ Students</span>
+                 <div className="ml-4 space-y-1">
+                  <div className="flex items-center space-x-2">
+                    <Users className="h-5 w-5 text-muted-foreground" />
+                    <span className="font-semibold text-lg text-foreground">50k+ Students</span>
                   </div>
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-2">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
                     ))}
-                    <span className="text-sm text-muted-foreground ml-1">4.9 Rating</span>
+                    <span className="text-base text-muted-foreground ml-1">4.9 Rating</span>
                   </div>
                 </div>
               </div>
