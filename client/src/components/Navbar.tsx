@@ -4,7 +4,7 @@ import { ModeToggle } from './mode-toggle';
 const Navbar = () => {
   return (
     <div className="w-full py-2">
-      <nav className=" mx-auto bg-background/95 backdrop-blur-lg border border-border/50 shadow-lg rounded-2xl">
+      <nav className=" mx-auto bg-background/95 backdrop-blur-lg border border-border/50 shadow-sm rounded-2xl">
         <div className="px-6 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -25,14 +25,14 @@ const Navbar = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-6">
-                <a href="#" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
+              <div className="hidden md:flex items-center space-x-10">
+                <a href="" className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
                   Dashboard
                 </a>
-                <a href="#" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
+                <a href="/generate" className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
                   Tests
                 </a>
-                <a href="#" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
+                <a href="#" className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
                   Results
                 </a>
               </div>

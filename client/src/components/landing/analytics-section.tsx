@@ -1,6 +1,6 @@
 export function AnalyticsSection() {
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
+    <section className="relative bg-gradient-to-br from-background to-muted/50 pt-8 pb-20 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">

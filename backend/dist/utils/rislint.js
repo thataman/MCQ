@@ -1,6 +1,6 @@
-import { config } from "dotenv";
+import Dotenv from "dotenv";
 import { Redis } from "ioredis";
-config();
+Dotenv.config();
 let redisInstance = null;
 function getRedisClient() {
     const serviceUrl = process.env.serviceUri;
