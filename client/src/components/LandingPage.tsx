@@ -1,7 +1,7 @@
 
 import  HeroSection  from "./landing/Hero-section";
 import { FeaturesSection } from "./landing/features-section";
-import { AnalyticsSection } from "./landing/analytics-section";
+//import { AnalyticsSection } from "./landing/analytics-section";
 import { QualitySection } from "./landing/quality-section";
 import Navbar from "./Navbar";
 import { useEffect } from "react";
@@ -20,14 +20,14 @@ const LandingPage = () => {
   
 }, []);
   return (
-   <>
+   <div className="max-w-8xl">
     <Navbar />
     <HeroSection />
     
       <FeaturesSection />
       {/* <AnalyticsSection /> */}
       <QualitySection />
-   </>
+   </div>
   );
 };
 

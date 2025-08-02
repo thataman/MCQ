@@ -325,7 +325,7 @@ const handleSubmit = async () => {
 
   return (
    <div className="relative w-full h-screen select-none
-  bg-primary-foreground/90 flex flex-col md:flex-row gap-2 p-3">
+  bg-background/70 flex flex-col md:flex-row gap-2 p-3">
 
 {
      loading &&

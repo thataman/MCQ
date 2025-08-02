@@ -132,7 +132,7 @@ const TestResults= () => {
   }; */
 
   return (
-    <div className=" bg-primary-foreground/80 p-4">
+    <div className=" bg-background/70 p-4">
       {/* Fixed Score Summary Header */}
     
 

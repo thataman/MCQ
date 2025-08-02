@@ -1,6 +1,6 @@
 import  { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen } from "lucide-react";
+import { BookOpen,MousePointerClick } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -207,7 +207,7 @@ const handleTestGenerate = async () => {
       
       <div className="max-w-7xl mx-auto px-4 py-8">
         
-        <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 mb-8 shadow-sm">
+        <div className="bg-card/50 backdrop-blur-sm border border-primary/50 rounded-xl p-6 mb-8 shadow-sm">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             <div className="flex-1 max-w-md">
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-3">
@@ -217,7 +217,7 @@ const handleTestGenerate = async () => {
                 Select Time Limit
               </h2>
               <Select onValueChange={(value) => setTimeLimit(value)}>
-                <SelectTrigger className="w-full h-11">
+                <SelectTrigger className="w-full h-10 border border-primary/50 rounded-lg">
                   <SelectValue placeholder="Choose your test duration" />
                 </SelectTrigger>
                 <SelectContent>
@@ -231,24 +231,25 @@ const handleTestGenerate = async () => {
             </div>
             
             <Button 
-              className="px-8 py-6 text-base font-medium bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105"
+              className="px-6 py-5 "
               onClick={handleTestGenerate}
             >
               Generate Test
+              <MousePointerClick className=" h-6 w-6" />
             </Button>
           </div>
         </div>
 
         
-        <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-sm">
+        <div className="bg-card/50 backdrop-blur-sm border border-primary/50 rounded-xl p-6 shadow-sm">
           <div className="mb-6">
-            <h2 className="text-2xl font-semibold mb-2 flex items-center gap-3">
+            <h2 className="text-xl font-semibold mb-2 flex items-center gap-3">
               <div className="p-2 bg-secondary/20 rounded-lg">
-                <BookOpen className="h-6 w-6 text-secondary-foreground" />
+                <BookOpen className="h-6 w-6 text-primary" />
               </div>
               Select Topics
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Choose the topics you want to include in your test
             </p>
           </div>
@@ -283,7 +284,7 @@ const PopoverComponent = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant={"outline"}>{Topic.name}</Button>
+        <Button className="border border-primary/50" variant={"outline"}>{Topic.name}</Button>
       </PopoverTrigger>
 
       <PopoverContent className="w-[960px]">
