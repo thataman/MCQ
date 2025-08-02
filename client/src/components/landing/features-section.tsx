@@ -1,4 +1,11 @@
-import { Clock, Target, TrendingUp, Users, BookOpen, Award } from "lucide-react"
+import {
+  Clock,
+  Target,
+  TrendingUp,
+  Users,
+  BookOpen,
+  Award,
+} from "lucide-react";
 
 export function FeaturesSection() {
   const features = [
@@ -7,64 +14,61 @@ export function FeaturesSection() {
       title: "Time-Bound Tests",
       description:
         "Practice under real exam conditions with customizable time limits to improve your speed and accuracy.",
-      color: "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400",
+      color:
+        "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400",
     },
     {
       icon: <BookOpen className="h-8 w-8" />,
       title: "Topic-Wise MCQs",
-      description: "Access thousands of questions organized by subjects and topics for focused learning.",
+      description:
+        "Access thousands of questions organized by subjects and topics for focused learning.",
       color: "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400",
     },
     {
       icon: <Target className="h-8 w-8" />,
       title: "Instant Results",
-      description: "Get immediate feedback with detailed explanations to understand your mistakes.",
-      color: "bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400",
+      description:
+        "Get immediate feedback with detailed explanations to understand your mistakes.",
+      color:
+        "bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400",
     },
     {
       icon: <TrendingUp className="h-8 w-8" />,
       title: "Progress Tracking",
-      description: "Monitor your improvement with comprehensive analytics and performance insights.",
-      color: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
+      description:
+        "Monitor your improvement with comprehensive analytics and performance insights.",
+      color:
+        "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
     },
     {
       icon: <Users className="h-8 w-8" />,
       title: "Competitive Mode",
-      description: "Challenge friends and compete with other students in live quiz battles.",
+      description:
+        "Challenge friends and compete with other students in live quiz battles.",
       color: "bg-pink-100 text-pink-600 dark:bg-pink-900/50 dark:text-pink-400",
     },
     {
       icon: <Award className="h-8 w-8" />,
       title: "Certification",
-      description: "Earn certificates and badges as you complete tests and achieve milestones.",
-      color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400",
+      description:
+        "Earn certificates and badges as you complete tests and achieve milestones.",
+      color:
+        "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400",
     },
-  ]
+  ];
 
   return (
-   
-    <section className="relative bg-gradient-to-br from-background to-muted/50 pt-8 pb-20 overflow-hidden">
-
-  {/* Floating Background Decorations */}
- {/* Floating Background Decorations */}
-<div className="absolute top-20 left-10 w-4 h-4 bg-gray-300 rounded-full opacity-40 animate-pulse"></div>
-<div className="absolute top-40 right-20 w-6 h-6 bg-gray-400 rounded-full opacity-30 animate-ping"></div>
-<div className="absolute bottom-20 left-1/4 w-3 h-3 bg-gray-300 rounded-full opacity-30 animate-pulse"></div>
-<div className="absolute top-60 right-1/3 w-2 h-2 bg-gray-400 rounded-full opacity-30 animate-ping"></div>
-
-
-  <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="max-w-7xl mx-auto   py-8 pb-20 ">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="text-gray-800 dark:text-gray-200 font-semibold text-lg">
-Our Features</span>
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mt-4 mb-6">
+          <h2 className="text-5xl  font-bold  mt-4 mb-6">
             Everything You Need to
             <br />
-            <span className="text-gray-900 dark:text-gray-100">Excel in Your Tests</span>
+            <span className="text-primary">Excel in Your Tests</span>
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Our comprehensive platform provides all the tools and resources you need to master any subject and ace your
-            exams with confidence.
+          <p className="text-md  max-w-lg mx-auto">
+            Our comprehensive platform provides all the tools and resources you
+            need to master any subject and ace your exams with confidence.
           </p>
         </div>
 
@@ -72,52 +76,45 @@ Our Features</span>
           {features.map((feature, index) => (
             <div key={index} className="group relative overflow-hidden pt-2">
               {/* Background gradient that changes on hover */}
-             <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 group-hover:from-gray-100 group-hover:via-gray-200 group-hover:to-gray-300 dark:group-hover:from-gray-800 dark:group-hover:via-gray-700 dark:group-hover:to-gray-600 transition-all duration-500 rounded-3xl pointer-events-none"></div>
-       {/* Main card content */}
-            <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 group-hover:border-gray-400 dark:group-hover:border-gray-600 rounded-3xl p-8 h-full transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-gray-400/10 dark:group-hover:shadow-gray-700/20 group-hover:-translate-y-2">
-  {/* Decorative corner element */}
-  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gray-200/10 to-gray-300/10 dark:from-gray-600/20 dark:to-gray-700/20 rounded-bl-3xl group-hover:from-gray-300/20 group-hover:to-gray-400/20 dark:group-hover:from-gray-600/30 dark:group-hover:to-gray-700/30 transition-all duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary via-muted to-muted-foreground  group-hover:via-primary/50 group-hover:to-primary group-hover:from-secondary dark:group-hover:via-secondary/50 dark:group-hover:to-secondary-foreground transition-all duration-500 rounded-3xl pointer-events-none"></div>
 
+              {/* Main card content */}
+              <div className="relative bg-card/80 backdrop-blur-sm border border-border/50 group-hover:border-border rounded-3xl p-8 h-full transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-muted/10 group-hover:-translate-y-2">
+                {/* Decorative corner element */}
+               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-muted/10 to-muted-foreground/10 rounded-bl-3xl rounded-tr-2xl group-hover:from-muted/20 group-hover:to-muted-foreground/20 transition-all duration-500"></div>
                 {/* Icon container with enhanced styling */}
                 <div className="relative z-10 mb-6">
-                 <div
-  className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg group-hover:shadow-xl"
->
-  <div className="group-hover:scale-110 transition-transform duration-300">
-    {feature.icon}
-  </div>
-</div>
+                  <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg group-hover:shadow-xl">
+                    <div className="group-hover:scale-110 transition-transform duration-300">
+                      {feature.icon}
+                    </div>
+                  </div>
 
                   {/* Small decorative dots */}
-                 <div className="absolute -top-2 -right-2 w-3 h-3 bg-gray-300 dark:bg-gray-600 rounded-full opacity-60 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300"></div>
+                  <div className="absolute -top-2 -right-2 w-3 h-3 bg-muted-foreground rounded-full opacity-60 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300"></div>
 
-<div className="absolute -bottom-1 -left-1 w-2 h-2 bg-gray-400 dark:bg-gray-700 rounded-full opacity-40 group-hover:opacity-80 group-hover:scale-150 transition-all duration-300"></div>
-           </div>
+                  <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-muted-foreground/70 rounded-full opacity-40 group-hover:opacity-80 group-hover:scale-150 transition-all duration-300"></div>
+                </div>
 
                 {/* Content */}
-               <div className="relative z-10 space-y-4">
-  <h3 className="text-xl font-bold text-black dark:text-white group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300">
-    {feature.title}
-  </h3>
-  <p className="text-gray-800 dark:text-gray-300 leading-relaxed group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors duration-300">
-    {feature.description}
-  </p>
-</div>
+                <div className="relative z-10 space-y-4">
+                  <h3 className="text-xl font-bold text-foreground group-hover:text-foreground/90 transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed group-hover:text-foreground/80 transition-colors duration-300">
+                    {feature.description}
+                  </p>
+                </div>
 
-
-                {/* Bottom accent line */}
-              {/* Bottom accent line */}
-<div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-gray-600 to-gray-400 dark:from-gray-300 dark:to-gray-500 group-hover:w-full transition-all duration-500 rounded-full"></div>
-
-{/* Floating particles effect */}
-<div className="absolute top-4 left-4 w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full opacity-0 group-hover:opacity-60 group-hover:animate-pulse transition-all duration-300"></div>
-<div className="absolute top-8 right-8 w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full opacity-0 group-hover:opacity-60 group-hover:animate-pulse transition-all duration-500"></div>
-<div className="absolute bottom-8 left-6 w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full opacity-0 group-hover:opacity-60 group-hover:animate-pulse transition-all duration-700"></div>
-        </div>
+                {/* Floating particles effect */}
+                <div className="absolute top-4 left-4 w-1 h-1 bg-muted-foreground/70 rounded-full opacity-0 group-hover:opacity-60 group-hover:animate-pulse transition-all duration-300"></div>
+                <div className="absolute top-8 right-8 w-1 h-1 bg-muted-foreground/70 rounded-full opacity-0 group-hover:opacity-60 group-hover:animate-pulse transition-all duration-500"></div>
+                <div className="absolute bottom-8 left-6 w-1 h-1 bg-muted-foreground/70 rounded-full opacity-0 group-hover:opacity-60 group-hover:animate-pulse transition-all duration-700"></div>
+              </div>
             </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }
