@@ -68,16 +68,13 @@ export default function HeroSection() {
               <Link to="/generate">
                 <Button
                  
-                  className="p-4"
+                  className="p-4 mt-4"
                 >
                   Start Giving Test For Free 
                   <MousePointerClick className=" h-6 w-6" />
                 </Button>
               </Link>
-              
-            </div>
-
-            <div className="flex items-center space-x-8">
+               <div className="flex items-center space-x-8 mt-8">
               <div className="flex items-center space-x-4">
                 <div className="flex -space-x-3">
                   <div className="w-12 h-12 bg-primary/20 rounded-full border-2 border-background">
@@ -117,6 +114,9 @@ export default function HeroSection() {
                 </div>
               </div>
             </div>
+            </div>
+
+           
           </div>
 
           
