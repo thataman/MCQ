@@ -5,6 +5,7 @@ import { FeaturesSection } from "./landing/features-section";
 import { QualitySection } from "./landing/quality-section";
 import Navbar from "./Navbar";
 import { useEffect } from "react";
+import MinimalFooter from "./landing/Footer";
 
 const LandingPage = () => {
   useEffect(() => {
@@ -27,6 +28,7 @@ const LandingPage = () => {
       <FeaturesSection />
       {/* <AnalyticsSection /> */}
       <QualitySection />
+      <MinimalFooter/>
    </div>
   );
 };

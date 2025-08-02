@@ -42,9 +42,10 @@ const Navbar = () => {
                   navItems.map((item) => (
                     <Link to={item.href}>
                      <Button
+                     variant={"outline"}
                         key={item.name}
                         
-                        className="text-sm font-medium"
+                        className="text-sm font-medium border-primary"
                         
                       >
                         {item.name}

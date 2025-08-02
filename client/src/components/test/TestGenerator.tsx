@@ -205,67 +205,69 @@ const handleTestGenerate = async () => {
       <Navbar />
       {isLoading && <StudentLoader isVisible={isLoading} loadingText="Generating Test Please Wait  ...." />}
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        
-        <div className="bg-card/50 backdrop-blur-sm border border-primary/50 rounded-xl p-6 mb-8 shadow-sm">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            <div className="flex-1 max-w-md">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <BookOpen className="h-5 w-5 text-primary" />
-                </div>
-                Select Time Limit
-              </h2>
-              <Select onValueChange={(value) => setTimeLimit(value)}>
-                <SelectTrigger className="w-full h-10 border border-primary/50 rounded-lg">
-                  <SelectValue placeholder="Choose your test duration" />
-                </SelectTrigger>
-                <SelectContent>
-                  {timeoptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <Button 
-              className="px-6 py-5 "
-              onClick={handleTestGenerate}
-            >
-              Generate Test
-              <MousePointerClick className=" h-6 w-6" />
-            </Button>
+     <div className="max-w-7xl mx-auto px-4 py-8">
+  
+  {/* Time Limit Card */}
+  <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 mb-8 ">
+    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+      <div className="flex-1 max-w-md">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-3">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <BookOpen className="h-5 w-5 text-primary" />
           </div>
-        </div>
-
-        
-        <div className="bg-card/50 backdrop-blur-sm border border-primary/50 rounded-xl p-6 shadow-sm">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2 flex items-center gap-3">
-              <div className="p-2 bg-secondary/20 rounded-lg">
-                <BookOpen className="h-6 w-6 text-primary" />
-              </div>
-              Select Topics
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Choose the topics you want to include in your test
-            </p>
-          </div>
-          
-          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {availableTopics.map((topic) => (
-              <PopoverComponent
-                key={topic.id}
-                functionf={handleSubtopicToggle}
-                Topic={topic}
-                keyWords={keywords}
-              />
+          Select Time Limit
+        </h2>
+        <Select onValueChange={(value) => setTimeLimit(value)}>
+          <SelectTrigger className="w-full h-10  rounded-lg">
+            <SelectValue placeholder="Choose your test duration" />
+          </SelectTrigger>
+          <SelectContent>
+            {timeoptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
             ))}
-          </div>
-        </div>
+          </SelectContent>
+        </Select>
       </div>
+      
+      <Button 
+        className="px-6 py-5"
+        onClick={handleTestGenerate}
+      >
+        Generate Test
+        <MousePointerClick className="h-6 w-6" />
+      </Button>
+    </div>
+  </div>
+
+  {/* Topics Card */}
+  <div className="bg-card/50   rounded-xl p-6 ">
+    <div className="mb-6">
+      <h2 className="text-xl font-semibold mb-2 flex items-center gap-3">
+        <div className="p-2 bg-secondary/20 rounded-lg">
+          <BookOpen className="h-6 w-6 text-primary" />
+        </div>
+        Select Topics
+      </h2>
+      <p className="text-sm text-muted-foreground">
+        Choose the topics you want to include in your test
+      </p>
+    </div>
+    
+    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {availableTopics.map((topic) => (
+        <PopoverComponent
+          key={topic.id}
+          functionf={handleSubtopicToggle}
+          Topic={topic}
+          keyWords={keywords}
+        />
+      ))}
+    </div>
+  </div>
+</div>
+
     </div>
   );
 };
@@ -284,7 +286,7 @@ const PopoverComponent = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="border border-primary/50" variant={"outline"}>{Topic.name}</Button>
+        <Button className="border " variant={"outline"}>{Topic.name}</Button>
       </PopoverTrigger>
 
       <PopoverContent className="w-[960px]">

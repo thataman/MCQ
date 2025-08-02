@@ -324,7 +324,7 @@ const handleSubmit = async () => {
   }
 
   return (
-   <div className="relative w-full h-screen select-none
+   <div className=" w-full h-screen select-none
   bg-background/70 flex flex-col md:flex-row gap-2 p-3">
 
 {
@@ -356,7 +356,7 @@ const handleSubmit = async () => {
         <div className="flex justify-between items-center mb-4">
           <div>
             <h2 className="text-xl font-bold">{test.title}</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm ">
               Question {overallQuestionNumber} of {test.questions.length}
             </p>
           </div>

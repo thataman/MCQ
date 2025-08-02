@@ -76,7 +76,7 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <div key={index} className="group relative overflow-hidden pt-2">
               {/* Background gradient that changes on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary via-muted to-muted-foreground  group-hover:via-primary/50 group-hover:to-primary group-hover:from-secondary dark:group-hover:via-secondary/50 dark:group-hover:to-secondary-foreground transition-all duration-500 rounded-3xl pointer-events-none"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary via-muted to-secondary  group-hover:via-primary/10 group-hover:to-primary group-hover:from-secondary dark:group-hover:via-secondary/50 dark:group-hover:to-secondary-foreground transition-all duration-500 rounded-3xl pointer-events-none"></div>
 
               {/* Main card content */}
               <div className="relative bg-card/80 backdrop-blur-sm border border-border/50 group-hover:border-border rounded-3xl p-8 h-full transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-muted/10 group-hover:-translate-y-2">
@@ -101,7 +101,7 @@ export function FeaturesSection() {
                   <h3 className="text-xl font-bold text-foreground group-hover:text-foreground/90 transition-colors duration-300">
                     {feature.title}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed group-hover:text-foreground/80 transition-colors duration-300">
+                  <p className="text-muted-foreground text-md leading-relaxed group-hover:text-foreground/80 transition-colors duration-300">
                     {feature.description}
                   </p>
                 </div>
