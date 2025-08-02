@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-br from-background to-muted/50 pt-8 pb-20 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-background to-muted/50 pt-8 pb-20 ">
       {/* Background decorative elements */}
       <div className="absolute top-20 left-10 w-4 h-4 bg-primary rounded-full opacity-60 animate-pulse"></div>
       <div className="absolute top-40 right-20 w-6 h-6 bg-primary/70 rounded-full opacity-40 animate-pulse"></div>
@@ -37,10 +37,14 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-5">
               <Link to='generate'>
               <Button
+              
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-xl shadow-xl hover:shadow-xl transition-all duration-200"
-              >
-                Start Testing Free
+               >
+                <Link to="/generate">
+    Start Testing Free
+  </Link>
+          
               </Button>
                 
               </Link>

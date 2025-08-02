@@ -23,8 +23,9 @@ const LandingPage = () => {
    <>
     <Navbar />
     <HeroSection />
+    
       <FeaturesSection />
-      <AnalyticsSection />
+      {/* <AnalyticsSection /> */}
       <QualitySection />
    </>
   );
