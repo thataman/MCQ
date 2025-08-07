@@ -9,7 +9,7 @@ import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/theme-provider';
 import TestResults from './components/test/TestResults';
 
-import { Analytics } from "@vercel/analytics/react"
+
 
 function App() {
   return (
@@ -36,7 +36,6 @@ function App() {
       </Router>
      
     </ThemeProvider>
-      <Analytics />
     </>
      </FunctionalErrorBoundary>
   );
