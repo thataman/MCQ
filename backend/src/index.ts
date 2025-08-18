@@ -15,8 +15,8 @@ app.use(cors({
     "https://test.sarojranjan.me",
     "https://www.test.sarojranjan.me",
     "http://localhost:5173" ,
-    "https://mcq-tan.vercel.app/generate",
-    "https://www.mcq-tan.vercel.app/generate"
+    "https://mcq-tan.vercel.app",
+    "https://www.mcq-tan.vercel.app"
   ],  
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
